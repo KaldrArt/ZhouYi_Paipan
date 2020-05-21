@@ -1,0 +1,2 @@
+class XinPaiGeJu:
+    pass
