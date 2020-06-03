@@ -1,4 +1,4 @@
-import math, ephem
+import math, ephem, datetime
 
 yuefen = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
 nlrq = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八",
@@ -21,9 +21,6 @@ def EquinoxSolsticeJD(year, angle):
         date = ephem.next_winter_solstice(year)  # 冬至
     JD = ephem.julian_date(date)
     return JD
-
-
-print(ephem.Date(EquinoxSolsticeJD(2020, 50) - 2415020))
 
 
 # 计算二十四节气
@@ -216,6 +213,64 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
             print(date.split('月')[1] + '为该月' + nlrq[rq] + '日')
     date2 = str(ephem.Date(shuoJD[k] + rq + 8 / 24 - 2415020))[:-9]
     return '农历' + str(nian) + '年' + date + ' 为公历：' + date2
+
+
+tropicl_year = 365.24219647  # 回归年长度
+# 24节气
+jieqi = ["春分", "清明", "谷雨", "立夏", "小满", "芒种", \
+         "夏至", "小暑", "大暑", "立秋", "处暑", "白露", \
+         "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", \
+         "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰"]
+
+
+# 计算黄经
+def ecliptic_lon(jd_utc):
+    s = ephem.Sun(jd_utc)  # 构造太阳
+    equ = ephem.Equatorial(s.ra, s.dec, epoch=jd_utc)  # 求太阳的视赤经视赤纬（epoch设为所求时间就是视赤经视赤纬）
+    e = ephem.Ecliptic(equ)  # 赤经赤纬转到黄经黄纬
+    return e.lon  # 返回黄纬
+
+
+def iteration(n, jd_utc):  # 迭代求时间
+    while True:
+        e = ecliptic_lon(jd_utc)
+        dd = (n * 15 - e * 180.0 / math.pi) / 360 * tropicl_year  # 24节气对应的太阳黄经和当前时间求得的太阳黄经差值转为天数
+        if dd > 360:  # 春分时太阳黄经为0，dd有可能差值过大
+            dd -= tropicl_year
+        jd_utc += dd
+        if abs(dd) < 0.000001:  # 0.0864秒
+            break
+    d = ephem.Date(jd_utc + 1 / 3)
+    d = d.tuple()
+    if n == 24:  # 春分时n=24
+        n -= 24
+    print(d)
+    print("{0}-{1:02d}-{2:02d} {3}：{4:02d}:{5:02d}:{6:03.1f}".format(d[0], d[1], d[2], jieqi[n], d[3], d[4], d[5]))
+
+
+def jq(date_str=ephem.now(), num=1):  # 从当前时间开始连续输出未来n个节气的时间
+    jd_utc = ephem.Date(date_str)  # 获取当前时间的一个儒略日和1899/12/31 12:00:00儒略日的差值
+    e = ecliptic_lon(jd_utc)
+    n = int(e * 180.0 / math.pi / 15)
+    for i in range(num):
+        if n > 24:
+            n -= 24
+        iteration(n, jd_utc)
+        jd_utc += 15
+        n += 1
+
+
+def jq_before(date: datetime.datetime):
+    pass
+
+
+def jq_after(date: datetime.datetime):
+    pass
+
+
+print(ephem.Date('2020/04/12 9:00:00'))
+
+jq(24)
 
 
 class Calendar:
