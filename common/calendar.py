@@ -23,6 +23,9 @@ def EquinoxSolsticeJD(year, angle):
     return JD
 
 
+print(ephem.Date(EquinoxSolsticeJD(2020, 50) - 2415020))
+
+
 # 计算二十四节气
 def SolarLongitube(JD):
     date = ephem.Date(JD - 2415020)
@@ -88,6 +91,8 @@ def dzs_search(year):  # 寻找年前冬至月朔日
 def Solar2LunarCalendar(date):  # 默认输入ut+8时间
     JD = ephem.julian_date(date) - 8 / 24  # ut
     year = ephem.Date(JD + 8 / 24 - 2415020).triple()[0]
+    d: ephem.Date = ephem.Date(JD + 8 / 24 - 2415020)
+    d.tuple()
     shuo = []  # 存储date
     shuoJD = []  # 存储JD
     # 判断所在年
@@ -211,3 +216,10 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
             print(date.split('月')[1] + '为该月' + nlrq[rq] + '日')
     date2 = str(ephem.Date(shuoJD[k] + rq + 8 / 24 - 2415020))[:-9]
     return '农历' + str(nian) + '年' + date + ' 为公历：' + date2
+
+
+class Calendar:
+    def get_lunar_info(self, date):
+        pass
+
+    pass

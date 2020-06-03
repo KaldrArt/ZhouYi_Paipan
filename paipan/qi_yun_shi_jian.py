@@ -1,3 +1,5 @@
+from datetime import datetime
+
 a = """
 大运起运时间的计算方法，是以出生之日所在月令，按男女顺逆方法推算到下一个节或者上一个节，记下日数。然后按三天为一年，一天为四个月，一个时辰为十天来折算，加上出生时间就是起运的时间。
 
@@ -43,5 +45,11 @@ a = """
 
 
 class QiYunShiJian:
-    def __init__(self, si_zhu):
+    def __init__(self, date: datetime, gender: bool, nian_gan_yin_yang: bool):
+        pass
+
+    def get_previous_jie(self):
+        pass
+
+    def get_next_jie(self):
         pass

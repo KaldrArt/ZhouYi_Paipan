@@ -41,7 +41,7 @@ def init_date(date: str):
     else:
         lunar_date = parsed_date
     lunar_date_str = lunar_date.strftime("%Y/%m/%d")
-    return parsed_date, lunar_date_str
+    return parsed_date, lunar_date_str, lunar_date
 
 
 class SiZhu:
