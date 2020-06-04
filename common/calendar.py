@@ -216,7 +216,7 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
 
 
 tropicl_year = 365.24219647  # 回归年长度
-# 24节气
+# 24节气，偶数为气，奇数为节
 jieqi = ["春分", "清明", "谷雨", "立夏", "小满", "芒种", \
          "夏至", "小暑", "大暑", "立秋", "处暑", "白露", \
          "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", \
@@ -244,33 +244,99 @@ def iteration(n, jd_utc):  # 迭代求时间
     d = d.tuple()
     if n == 24:  # 春分时n=24
         n -= 24
-    print(d)
-    print("{0}-{1:02d}-{2:02d} {3}：{4:02d}:{5:02d}:{6:03.1f}".format(d[0], d[1], d[2], jieqi[n], d[3], d[4], d[5]))
+    r_str = "{0}-{1:02d}-{2:02d} {3}：{4:02d}:{5:02d}:{6:03.1f}" \
+        .format(d[0], d[1], d[2], jieqi[n], d[3], d[4], d[5])
+    date = datetime.datetime(d[0], d[1], d[2], d[3], d[4], math.floor(d[5]))
+    jie_qi_str = jieqi[n]
+    return jie_qi_str, date, r_str, n
 
 
 def jq(date_str=ephem.now(), num=1):  # 从当前时间开始连续输出未来n个节气的时间
     jd_utc = ephem.Date(date_str)  # 获取当前时间的一个儒略日和1899/12/31 12:00:00儒略日的差值
     e = ecliptic_lon(jd_utc)
-    n = int(e * 180.0 / math.pi / 15)
+    n = math.ceil(e * 180.0 / math.pi / 15)
+    results = []
     for i in range(num):
         if n > 24:
             n -= 24
-        iteration(n, jd_utc)
+        results.append(iteration(n, jd_utc))
         jd_utc += 15
         n += 1
+    if num == 1:
+        return results[0]
+    else:
+        return results
 
 
-def jq_before(date: datetime.datetime):
-    pass
+def get_jie_or_qi(elements, jie=True, first=True):
+    """
+    从几个节气中，找到节或者气。
+    :param elements:所有的节气元素
+    :param jie:是节还是气
+    :param first:是否返回第一个节或者气，如果不返回第一个，那么就返回最后一个
+    :return:
+    """
+    result = None
+    for r_jie_qi in elements:
+        jie_qi_index = jieqi.index(r_jie_qi[0])
+        print(r_jie_qi[0])
+        if (jie and jie_qi_index % 2 == 1) or ((not jie) and jie_qi_index % 2 == 0):
+            print(r_jie_qi[0])
+            result = r_jie_qi
+            if first:
+                break
+            else:
+                continue
+
+    return result
 
 
-def jq_after(date: datetime.datetime):
-    pass
+def jie_before(date: datetime.datetime):
+    result = []
+    jie = select_jie(date, next=False)
+    jq_result = list(jie)
+    result += jq_result
+    result.append(date - jq_result[1])
+    return result
 
 
-print(ephem.Date('2020/04/12 9:00:00'))
+def jie_after(date: datetime.datetime):
+    result = []
+    jq_result = select_jie(date, next=True)
+    result += jq_result
+    result.append(jq_result[1] - date)
+    return result
 
-jq(24)
+
+def get_jie_of_year(year: int):
+    date_str = datetime.datetime(year - 1, 11, 1, 0, 0, 0).strftime("%Y/%m/%d %H:%M:%S")
+    jqs = jq(date_str, 28)
+    results = []
+    for e in jqs:
+        name = e[0]
+        index = jieqi.index(name)
+        if index % 2 == 1:
+            results.append(e)
+    return results
+
+
+def select_jie(date: datetime.datetime, next=True):
+    year = date.year
+    year_jies = get_jie_of_year(year)
+    result = None
+    for jie in year_jies:
+        jie_date = jie[1]
+        print(jie)
+        if next:
+            if jie_date > date:
+                result = jie
+                break
+        else:
+            if jie_date < date:
+                result = jie
+            else:
+                break
+    return result
 
 
 class Calendar:
@@ -278,3 +344,7 @@ class Calendar:
         pass
 
     pass
+
+# results = jq(num=24)
+# for r in results:
+#     print(r)
