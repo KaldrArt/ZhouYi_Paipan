@@ -238,7 +238,7 @@ def iteration(n, jd_utc):  # 迭代求时间
         if dd > 360:  # 春分时太阳黄经为0，dd有可能差值过大
             dd -= tropicl_year
         jd_utc += dd
-        if abs(dd) < 0.000001:  # 0.0864秒
+        if abs(dd) < 0.000000001:  # 0.0864秒
             break
     d = ephem.Date(jd_utc + 1 / 3)
     d = d.tuple()
@@ -318,6 +318,11 @@ def get_jie_of_year(year: int):
         if index % 2 == 1:
             results.append(e)
     return results
+
+
+# rs = get_jie_of_year(2020)
+# for r in rs:
+#     print(r)
 
 
 def select_jie(date: datetime.datetime, next=True):

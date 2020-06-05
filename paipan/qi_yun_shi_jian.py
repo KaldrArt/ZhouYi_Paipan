@@ -90,13 +90,20 @@ class QiYunShiJian:
         days = ((time_delta % (24 * 3600)) // (2 * 3600)) * 10  # 不满1天的部分，看看能划出几个时辰，一个时辰为10天
         days_2 = time_delta % 7200 // 720  # 不满1个时辰的部分，720秒为一天
         seconds = time_delta % 720 // 60 * 3600 * 2  # 最后剩余的部分，60秒为一个时辰，一个时辰7200秒
-        start_yun_time = self.birthday + timedelta(days=days + days_2 + (years + months / 12) * tropicl_year)
-        print(years, months, days + days_2)
+        seconds_2 = time_delta % 60 * 120
+        print(years, months, days + days_2, seconds + seconds_2)
+        start_yun_time = self.birthday + timedelta(days=days + days_2 + (years + months / 12) * tropicl_year,
+                                                   seconds=seconds + seconds_2)
+        start_yun_time2 = self.birthday + timedelta(days=days + days_2 + (years + months / 12) * tropicl_year,
+                                                    seconds=seconds + seconds_2)
+        start_yun_time3 = self.birthday + timedelta(seconds=time_delta * tropicl_year / 3)
+
+        print(start_yun_time3)
         print(start_yun_time)
+        return start_yun_time
 
-
-# qysj = QiYunShiJian(datetime(1986, 10, 13, 9, 30), True, True)
-qysj = QiYunShiJian(datetime(2003, 3, 5, 7, 30), False, False)
-qysj = QiYunShiJian(datetime(2003, 3, 6, 7, 30), False, False)
-
-qysj = QiYunShiJian(datetime(2006, 3, 6, 1, 30), True, True)
+#
+# qysj = QiYunShiJian(datetime(1987, 10, 13, 9, 17), True, False)
+# qysj = QiYunShiJian(datetime(1986, 10, 13, 9, 17), True, True)
+# qysj = QiYunShiJian(datetime(2003, 3, 5, 7, 30), False, False)
+# qysj = QiYunShiJian(datetime(2003, 3, 6, 7, 30), False, False)
