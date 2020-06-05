@@ -1,21 +1,97 @@
+from common import *
+from .pai_pan import PaiPan
+import prettytable as pt
+import sys
+from .da_yun import DaYunDetail
+from .liu_nian import LiuNian
+
+
 class PaiPanPrinter:
-    def __init__(self, pai_pan):
+    def __init__(self, pai_pan: PaiPan):
         self.pai_pan = pai_pan
+        self.print_all()
 
     def print_bazi(self):
-        pass
+        ri_zhu = self.pai_pan.ri_zhu.tian_gan.name
+        tb = pt.PrettyTable(encoding=sys.stdout.encoding)
+        tb.field_names = ['性别',
+                          self.pai_pan.nian_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
+                          self.pai_pan.yue_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
+                          "日主",
+                          self.pai_pan.shi_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
+                          "空亡",
+                          "胎元"
+                          ]
+
+        tb.add_row(["乾造" if self.pai_pan.gender else "坤造",
+                    self.pai_pan.nian_zhu.tian_gan.name,
+                    self.pai_pan.yue_zhu.tian_gan.name,
+                    self.pai_pan.ri_zhu.tian_gan.name,
+                    self.pai_pan.shi_zhu.tian_gan.name,
+                    "".join([x.name for x in self.pai_pan.kong_wang]),
+                    ""
+                    ])
+        tb.add_row(["",
+                    self.pai_pan.nian_zhu.di_zhi.name,
+                    self.pai_pan.yue_zhu.di_zhi.name,
+                    self.pai_pan.ri_zhu.di_zhi.name,
+                    self.pai_pan.shi_zhu.di_zhi.name,
+                    "", ""])
+        tb.add_row([
+            "",
+            cang_gan[self.pai_pan.nian_zhu.di_zhi.name],
+            cang_gan[self.pai_pan.yue_zhu.di_zhi.name],
+            cang_gan[self.pai_pan.ri_zhu.di_zhi.name],
+            cang_gan[self.pai_pan.shi_zhu.di_zhi.name],
+            "",
+            self.pai_pan.tai_yuan.name
+        ])
+        print(tb)
 
     def print_dayun(self):
-        pass
+        title = []
+        content = []
+        for j in range(10):
+            c = []
+            for i in range(2 * len(self.pai_pan.da_yun.da_yun_list)):
+                c.append("")
+            content.append(c)
 
-    def print_liunian(self):
-        pass
+        column = 0
+        for item in self.pai_pan.da_yun.da_yun_list:
+            dayun_item: DaYunDetail = item
+            title.append(dayun_item.start_year)
+            title.append(dayun_item.name)
+            row = 0
+            for inner_item in dayun_item.liu_nian_list:
+                inner_liunian: LiuNian = inner_item
+                content[row][column * 2] = "%s" % inner_liunian.year
+                content[row][column * 2 + 1] = "%s" % inner_liunian.name
+                row += 1
+            column += 1
+        tb = pt.PrettyTable(encoding=sys.stdout.encoding)
+        tb.field_names = title
+        for row in content:
+            tb.add_row(row)
+        print(tb)
 
     def print_xiaoyun(self):
-        pass
+        tb = pt.PrettyTable(encoding=sys.stdout.encoding)
+        title = ["小运"]
+        for i in range(len(self.pai_pan.xiao_yun_list)):
+            title.append(self.pai_pan.date.year + i)
+        tb.field_names = title
+        content = [""]
+        for xiaoyun in self.pai_pan.xiao_yun_list:
+            content.append(xiaoyun.name)
+        tb.add_row(content)
+        print(tb)
 
     def print_basic_info(self):
-        pass
+        print("起运时间：%s" % self.pai_pan.qi_yun_time)
 
     def print_all(self):
-        pass
+        self.print_basic_info()
+        self.print_bazi()
+        self.print_xiaoyun()
+        self.print_dayun()

@@ -1,6 +1,21 @@
 from common.relations.relation import *
 from common.zhangsheng import tian_gan_zhang_sheng, zhang_sheng_list
 
+cang_gan = {
+    "子": "癸",
+    "丑": "己辛癸",
+    "寅": "甲丙戊",
+    "卯": "乙",
+    "辰": "戊癸乙",
+    "巳": "丙庚戊",
+    "午": "丁己",
+    "未": "己乙丁",
+    "申": "庚壬戊",
+    "酉": "辛",
+    "戌": "戊丁辛",
+    "亥": "壬甲"
+}
+
 
 class TianGanDiZhiRelation(Relation):
     def __init__(self, tiangan: TianGan, dizhi: DiZhi):
@@ -15,20 +30,7 @@ class TianGanDiZhiRelation(Relation):
         self.set_relation_names()
 
     def get_cang_gan(self):
-        cang_gan = {
-            "子": "癸",
-            "丑": "己辛癸",
-            "寅": "甲丙戊",
-            "卯": "乙",
-            "辰": "戊癸乙",
-            "巳": "丙庚戊",
-            "午": "丁己",
-            "未": "己乙丁",
-            "申": "庚壬戊",
-            "酉": "辛",
-            "戌": "戊丁辛",
-            "亥": "壬甲"
-        }
+
         tiangans = list(cang_gan[self.dizhi.name])
         if self.tiangan.name in tiangans:
             if len(tiangans) == 1:

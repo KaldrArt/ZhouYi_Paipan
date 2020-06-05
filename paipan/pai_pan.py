@@ -16,7 +16,7 @@ class PaiPan(SiZhu):
                             self.date.year,
                             self.gender,
                             da_yun_count)
-        self.tai_yuan = self.get_tai_yuan()
+        self.tai_yuan: JiaZiBase = self.get_tai_yuan()
         self.xiao_yun_list, self.xiaoyun_ob = self.get_xiao_yun()
         self.ge_ju_algorithm = ge_ju_algorithm
 
@@ -36,7 +36,7 @@ class PaiPan(SiZhu):
         if taiyuan_dizhi_index > 11:
             taiyuan_dizhi_index -= 12
         dizhi = di_zhi_list[taiyuan_dizhi_index]
-        return JiaZi[tiangan + dizhi]
+        return JiaZi[tiangan + dizhi].value
 
     def get_ming_gong(self):
         pass
