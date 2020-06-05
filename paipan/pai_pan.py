@@ -2,12 +2,10 @@ from common import *
 from paipan.si_zhu import SiZhu
 from paipan.da_yun import DaYun
 from paipan.qi_yun_shi_jian import QiYunShiJian
-from common.calendar import Calendar
 from paipan.xiao_yun import XiaoYun
 
 
 class PaiPan(SiZhu):
-    calendar = Calendar()
 
     def __init__(self, date, gender=True, solar=True, da_yun_count=10, ge_ju_algorithm=None):
         super().__init__(date, gender, solar)
@@ -55,7 +53,6 @@ class PaiPan(SiZhu):
         result_list = xiao_yun.get_xiao_yun()
         result_ob = {}
         for item in result_list:
-            print(item)
             result_ob[item.name] = item
         return result_list, result_ob
 
