@@ -10,6 +10,7 @@ for tian_gan in tian_gan_list:
             relation = TianGanRelation(TianGan[tian_gan], TianGan[char])
             TianGan[tian_gan].value.relations[char] = relation.relations['without_yin_yang']
             TianGan[tian_gan].value.relations_with_yin_yang[char] = relation.relations['with_yin_yang']
+            TianGan[tian_gan].value.shi_shen_relation[char] = relation.shi_shen
         else:
             relation = TianGanDiZhiRelation(TianGan[tian_gan], DiZhi[char])
             TianGan[tian_gan].value.relations[char] = relation.relations['without_yin_yang']
