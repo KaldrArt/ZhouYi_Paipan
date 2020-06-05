@@ -216,6 +216,7 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
 
 
 tropicl_year = 365.24219647  # 回归年长度
+
 # 24节气，偶数为气，奇数为节
 jieqi = ["春分", "清明", "谷雨", "立夏", "小满", "芒种", \
          "夏至", "小暑", "大暑", "立秋", "处暑", "白露", \
@@ -279,9 +280,8 @@ def get_jie_or_qi(elements, jie=True, first=True):
     result = None
     for r_jie_qi in elements:
         jie_qi_index = jieqi.index(r_jie_qi[0])
-        print(r_jie_qi[0])
+        # print(r_jie_qi[0])
         if (jie and jie_qi_index % 2 == 1) or ((not jie) and jie_qi_index % 2 == 0):
-            print(r_jie_qi[0])
             result = r_jie_qi
             if first:
                 break
@@ -320,18 +320,13 @@ def get_jie_of_year(year: int):
     return results
 
 
-# rs = get_jie_of_year(2020)
-# for r in rs:
-#     print(r)
-
-
 def select_jie(date: datetime.datetime, next=True):
     year = date.year
     year_jies = get_jie_of_year(year)
     result = None
     for jie in year_jies:
         jie_date = jie[1]
-        print(jie)
+
         if next:
             if jie_date > date:
                 result = jie

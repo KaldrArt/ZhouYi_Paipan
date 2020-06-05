@@ -48,24 +48,26 @@ a = """
 
 class QiYunShiJian:
     def __init__(self, date: datetime, gender: bool, nian_gan_yin_yang: bool):
-        print("生日%s" % (date))
         self.birthday = date
         self.gender = gender
         self.info = ""
         self.nian_gan_yin_yang = nian_gan_yin_yang
         self.qi_yun_shi_jian = self.get_qi_yun_shi_jian()
-        print(self.info)
-        print("================")
 
     def get_qi_yun_shi_jian(self):
+        self.info = "%s出生在%s年，大运" % (
+            "男" if self.gender else "女",
+            "阳" if self.nian_gan_yin_yang else "阴"
+        )
         if self.nian_gan_yin_yang == self.gender:
-            print("顺排")
+            self.info += "顺排"
             jie_qi_info = self.get_next_jie()
             self.info += "出生后第一个节气是%s（%s）" % (jie_qi_info[0], jie_qi_info[1].strftime("%Y/%m/%d %H:%M:%S"))
         else:
-            print("逆排")
+            self.info += "逆排"
             jie_qi_info = self.get_previous_jie()
             self.info += "出生前第一个节气是%s（%s）" % (jie_qi_info[0], jie_qi_info[1].strftime("%Y/%m/%d %H:%M:%S"))
+        self.info += "，"
         return self.get_time(jie_qi_info)
 
     def get_previous_jie(self):
@@ -73,37 +75,13 @@ class QiYunShiJian:
 
     def get_next_jie(self):
         jq_info = jie_after(self.birthday)
-        # birthday_for_lunar = (self.birthday - timedelta(hours=2)).replace(minute=0, second=0, microsecond=0)
-        # jq_for_lunar = (jq_info[1] - timedelta(hours=2)).replace(minute=0, second=0, microsecond=0)
-        # print(birthday_for_lunar, jq_for_lunar)
-        # if birthday_for_lunar == jq_for_lunar:
-        #     jq_info = jie_after(self.birthday + timedelta(days=1))
         return jq_info
 
     def get_time(self, jie_qi_info):
-        print(jie_qi_info)
         time_delta = jie_qi_info[4].total_seconds()
         if time_delta < 0:
             time_delta = -time_delta
-        years = time_delta // (3 * 24 * 3600)  # 满3天的为一年
-        months = ((time_delta % (3 * 24 * 3600)) // (24 * 3600)) * 4  # 不满3天的剩余天数，一天为4个月
-        days = ((time_delta % (24 * 3600)) // (2 * 3600)) * 10  # 不满1天的部分，看看能划出几个时辰，一个时辰为10天
-        days_2 = time_delta % 7200 // 720  # 不满1个时辰的部分，720秒为一天
-        seconds = time_delta % 720 // 60 * 3600 * 2  # 最后剩余的部分，60秒为一个时辰，一个时辰7200秒
-        seconds_2 = time_delta % 60 * 120
-        print(years, months, days + days_2, seconds + seconds_2)
-        start_yun_time = self.birthday + timedelta(days=days + days_2 + (years + months / 12) * tropicl_year,
-                                                   seconds=seconds + seconds_2)
-        start_yun_time2 = self.birthday + timedelta(days=days + days_2 + (years + months / 12) * tropicl_year,
-                                                    seconds=seconds + seconds_2)
-        start_yun_time3 = self.birthday + timedelta(seconds=time_delta * tropicl_year / 3)
+        start_yun_time = self.birthday + timedelta(seconds=time_delta * tropicl_year / 3)
 
-        print(start_yun_time3)
-        print(start_yun_time)
+        self.info += "起运时间为%s" % start_yun_time
         return start_yun_time
-
-#
-# qysj = QiYunShiJian(datetime(1987, 10, 13, 9, 17), True, False)
-# qysj = QiYunShiJian(datetime(1986, 10, 13, 9, 17), True, True)
-# qysj = QiYunShiJian(datetime(2003, 3, 5, 7, 30), False, False)
-# qysj = QiYunShiJian(datetime(2003, 3, 6, 7, 30), False, False)

@@ -2,6 +2,7 @@ from .dizhi import DiZhi, di_zhi_list
 from .tiangan import TianGan, tian_gan_list
 from .zhangsheng import zhang_sheng_list, tian_gan_zhang_sheng
 from common.relations import TianGanRelation, DiZhiRelation, TianGanDiZhiRelation
+from .jiazi import JiaZi, JiaZiBase, jia_zi_list
 
 for tian_gan in tian_gan_list:
     for char in TianGan[tian_gan].value.relations:

@@ -47,7 +47,7 @@ def init_date(date: str):
 class SiZhu:
     def __init__(self, date, gender=True, solar=True):
         self.solar = True or solar
-        self.date, self.solar_to_lunar_date = init_date(date)
+        self.date, self.solar_to_lunar_date, _ = init_date(date)
         self.gender = gender
         if self.solar:
             self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(self.solar_to_lunar_date)
