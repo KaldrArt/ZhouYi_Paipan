@@ -6,7 +6,7 @@ class DaYunDetail(JiaZiBase):
     def __init__(self, year, tiangan: str, dizhi: str, index: int, birth_year):
         super().__init__(tiangan, dizhi, index)
         self.start_year = year
-        self.end_year = year + 10
+        self.end_year = year + 9
         self.birth_year = birth_year
         self.start_age = year - birth_year
         self.end_age = self.end_year - birth_year

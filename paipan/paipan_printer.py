@@ -7,9 +7,10 @@ from .liu_nian import LiuNian
 
 
 class PaiPanPrinter:
-    def __init__(self, pai_pan: PaiPan):
+    def __init__(self, pai_pan: PaiPan, print_liu_nian_year=False):
         self.pai_pan = pai_pan
         self.print_all()
+        self.print_liu_nian_year = print_liu_nian_year
 
     def print_bazi(self):
         ri_zhu = self.pai_pan.ri_zhu.tian_gan.name
@@ -75,6 +76,27 @@ class PaiPanPrinter:
             tb.add_row(row)
         print(tb)
 
+    def print_dayun_simple(self):
+        tb = pt.PrettyTable(encoding=sys.stdout.encoding)
+        titles = []
+        contents = [[], [], [], [], [], [], [], [], [], [], [], []]
+        da_yun_index = 0
+        for item in self.pai_pan.da_yun.da_yun_list:
+            da_yun: DaYunDetail = item
+            titles.append(da_yun.name)
+            contents[0].append(da_yun.start_year)
+            contents[11].append(da_yun.end_year)
+            liu_nian_index = 1
+            for inner_item in da_yun.liu_nian_list:
+                liu_nian: LiuNian = inner_item
+                contents[liu_nian_index].append(liu_nian.name)
+                liu_nian_index += 1
+            da_yun_index += 1
+        tb.field_names = titles
+        for row in contents:
+            tb.add_row(row)
+        print(tb)
+
     def print_xiaoyun(self):
         tb = pt.PrettyTable(encoding=sys.stdout.encoding)
         title = ["小运"]
@@ -93,5 +115,8 @@ class PaiPanPrinter:
     def print_all(self):
         self.print_basic_info()
         self.print_bazi()
+        if self.print_liu_nian_year:
+            self.print_dayun()
+        else:
+            self.print_dayun_simple()
         self.print_xiaoyun()
-        self.print_dayun()
