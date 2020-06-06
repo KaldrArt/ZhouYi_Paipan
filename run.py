@@ -1,6 +1,4 @@
-from paipan.pai_pan import PaiPan
-from paipan.paipan_printer import PaiPanPrinter
+from analyzer.basic_analyzer import BasicAnalyzer
 
-# b = PaiPan('1980/1/14 3:35', gender=False)
-b = PaiPan('1972/7/3 13:15', False)
-printer = PaiPanPrinter(b)
+BasicAnalyzer('1980/1/14 3:35', gender=False)  # 克夫女
+BasicAnalyzer('1972/7/3 13:15', False)  # 克夫尼姑女

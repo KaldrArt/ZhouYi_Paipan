@@ -9,8 +9,8 @@ from .liu_nian import LiuNian
 class PaiPanPrinter:
     def __init__(self, pai_pan: PaiPan, print_liu_nian_year=False):
         self.pai_pan = pai_pan
-        self.print_all()
         self.print_liu_nian_year = print_liu_nian_year
+        self.print_all()
 
     def print_bazi(self):
         ri_zhu = self.pai_pan.ri_zhu.tian_gan.name

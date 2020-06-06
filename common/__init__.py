@@ -1,5 +1,5 @@
-from .dizhi import DiZhi, di_zhi_list
-from .tiangan import TianGan, tian_gan_list
+from .dizhi import DiZhi, di_zhi_list, DiZhiBase
+from .tiangan import TianGan, tian_gan_list, TianGanBase
 from .zhangsheng import zhang_sheng_list, tian_gan_zhang_sheng
 from common.relations import TianGanRelation, DiZhiRelation, TianGanDiZhiRelation, cang_gan
 from .jiazi import JiaZi, JiaZiBase, jia_zi_list
