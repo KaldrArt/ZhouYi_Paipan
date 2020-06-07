@@ -18,6 +18,7 @@ class LiuQin:
         self.jia_zi = None
         self.position_name = False
         self.relation = effect_gan.shi_shen_relation[base_gan.name]
+        self.position_id = -1
 
     def set_tou(self, tou=False):
         self.tou = tou
@@ -27,6 +28,14 @@ class LiuQin:
 
     def set_position_name(self, name):
         self.position_name = name
+        if name == "年柱":
+            self.position_id = 0
+        elif name == "月柱":
+            self.position_id = 1
+        elif name == '日柱':
+            self.position_id = 2
+        elif name == "时柱":
+            self.position_id = 3
 
     def set_jia_zi(self, jia_zi):
         self.jia_zi = jia_zi
