@@ -47,7 +47,7 @@ class LiuQin:
         )
 
 
-class LiuQinRelation:
+class LiuQinBasic:
     def __init__(self, pai_pan: PaiPan):
         self.pai_pan = pai_pan
         self.liu_qin = self.generate_liu_qin()
