@@ -5,15 +5,16 @@ www.zhouyi.com.cn/paipan
 预测策项:回信息
 起卦钥语:周涛什么时候回我信息
 前提条件:周四发的信息没有回，说12月上旬来浙江
-起卦时间:2020年11月23日申时
-丁亥月　庚午日(戌亥空)7523卦
+起卦时间:2020年11月30日申时
+丁亥月　丁丑日(申酉空)7523卦
 　　《山风蛊》 《山地剥》 六神
-　　　兄寅、 应　 寅、　　蛇
-孙巳：父子.. 　　 子..　　勾
-　　　才戌.. 　　 戌..　　雀
-　　　官酉○ 巽　 卯..　　龙
-　　　父亥○ 　　 巳..　　玄
-　　　才丑.. 　　 未..　　虎
+　　　兄寅、 应　 寅、　　龙
+孙巳：父子.. 　　 子..　　玄
+　　　才戌.. 　　 戌..　　虎
+　　　官酉○ 巽　 卯..　　蛇
+　　　父亥○ 　　 巳..　　勾
+　　　才丑.. 　　 未..　　雀
+
 """
 
 
@@ -61,10 +62,19 @@ class Transformer:
         self.get_info()
         self.transfer_text_to_markdown()
         self.simple_info_to_markdown()
+        self.detailed = detailed
+        self.print_info()
+
+    def print_info(self):
+        print("# 一、求测内容")
         print(self.info_mk_table)
+        print("# 二、卦")
         print(self.mk_table)
-        if detailed:
+        if self.detailed:
             print(self.detailed_mk_table)
+        print("# 三、断语")
+        print("")
+        print("# 四、实际情况")
 
     def split_content(self):
         self.text = self.text.replace("\u3000", "").replace(" ", "")
