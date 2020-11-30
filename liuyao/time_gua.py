@@ -3,9 +3,6 @@ from common import di_zhi_list
 from common.calendar import Solar2LunarCalendar
 import math
 
-print(di_zhi_list)
-print(Solar2LunarCalendar("2020-06-12 12:00"))
-
 
 class TimeGua:
     def __init__(self, init_input_number, calendar_type='solar'):
