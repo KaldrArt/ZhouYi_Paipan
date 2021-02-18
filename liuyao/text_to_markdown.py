@@ -1,19 +1,20 @@
 example = """
-李洪成六爻在线摇卦
-www.zhouyi.com.cn/paipan
-求测人年龄:35 性别:男
-预测策项:见面时间
-起卦钥语:我与周涛见面洽谈产业园和科技公司事宜的具体时间
-前提条件:我有空，周涛有空
-起卦时间:2020年12月1日辰时
-丁亥月 戊寅日(申酉空)662卦
-  《坎为水》 《水地比》 六神
-   兄子.. 坎  子..  雀
-   官戌、    戌、  龙
-   父申..    申..  玄
-   才午.. 应  卯..  虎
-   官辰○    巳..  蛇
-   孙寅..    未..  勾
+李洪成六爻排盘 www.zhouyi.com.cn/paipan
+求测人年龄:青年　性别:女　职业:无职业
+预测策项:年运
+起卦钥语:我今年年运如何？
+前提条件:暂无职业，想问今年的学业事业财运
+策项时限:一年
+起卦时间:2021年2月17日午时 星期三
+庚寅月　丙申日(辰巳空) 732卦
+ 《山火贲》《大　畜》六神
+　　官寅、　　寅、　龙
+　　财子..　　子..　玄
+　　兄戌..应　戌..　虎
+孙申财亥、　　辰、　蛇
+父午兄丑×　　寅、　勾
+　　官卯、艮　子、　雀
+
 """
 
 
@@ -47,6 +48,7 @@ class Transformer:
         self.info = {
             "age": 0,
             "gender": "男",
+            "profession": "",
             "project": "",
             "content": "",
             "condition": "",
@@ -54,6 +56,7 @@ class Transformer:
             "code": ""
         }
         self.content = []
+        self.is_jing = False
         self.info_mk_table = ""
         self.detailed_mk_table = ""
         self.mk_table = ""
@@ -85,14 +88,17 @@ class Transformer:
             if not start_gua:
                 if line.startswith("求测人年龄"):
                     strs = line.split(":")
-                    self.info['gender'] = strs[2]
+                    self.info['gender'] = strs[2][0]
                     self.info['age'] = strs[1].replace("性别", "")
+                    self.info['profession'] = strs[3]
                 elif line.startswith("预测策项"):
                     self.info['project'] = line.split(":")[1]
                 elif line.startswith("起卦钥语"):
                     self.info['content'] = line.split(":")[1]
                 elif line.startswith("前提条件"):
                     self.info['condition'] = line.split(":")[1]
+                elif line.startswith("策项时限"):
+                    self.info['timelimit'] = line.split(":")[1]
                 elif line.startswith("起卦时间"):
                     self.info['time'] = line.split(":")[1]
                     start_gua = True
@@ -103,10 +109,12 @@ class Transformer:
         mk_titles = ["项目", '内容']
         mk_lines = [
             ["年龄", self.info['age']],
+            ["职业", self.info['profession']],
             ['性别', self.info['gender']],
             ['策项', self.info['project']],
             ['钥语', self.info['content']],
             ['条件', self.info['condition']],
+            ['时限', self.info['timelimit']],
             ['时间', self.info['time']],
             ['卦码', self.info['code']]
         ]
@@ -123,6 +131,12 @@ class Transformer:
             if line[0] in self.tiangan:
                 ri_yue = self.get_ri_yue(line)
             elif line[0] == "《":
+                gua_count = 0
+                for char in line:
+                    if char == "《":
+                        gua_count += 1
+                if gua_count == 1:
+                    self.is_jing = True
                 gua_name = self.get_gua_name(line)
             else:
                 yao = self.get_yao(line)
@@ -141,10 +155,13 @@ class Transformer:
 
     def get_yao(self, line):
         result = ["", "", "", "", "", "", ""]
-        if "：" in line:
-            strs = line.split("：")
-            fu_shen = strs[0]
-            other = strs[1]
+        dizhi_count = 0
+        for s in line:
+            if s in self.dizhi:
+                dizhi_count += 1
+        if (dizhi_count == 3 and not self.is_jing) or (self.is_jing and dizhi_count == 2):
+            fu_shen = line[0:2]
+            other = line[2:]
             result = self.get_yao(other)
             result[0] = fu_shen
         else:
@@ -159,10 +176,11 @@ class Transformer:
                         line = line.replace(s, "")
                         break
             result[1] = line[0:2]
-            if line[-2] == ".":
-                result[5] = ".."
-            elif line[-2] == "、":
-                result[5] = "、"
+            if not self.is_jing:
+                if line[-2] == ".":
+                    result[5] = ".."
+                elif line[-2] == "、":
+                    result[5] = "、"
             if line[2] == ".":
                 result[2] = ".."
             elif line[2] == "、":
@@ -172,12 +190,16 @@ class Transformer:
             elif line[2] == "×":
                 result[2] = "×"
             line = line.replace(".", "").replace("×", "").replace("、", "").replace("○", "")
-            result[4] = line[2]
+            if not self.is_jing:
+                result[4] = line[2]
         return result
 
     def get_gua_name(self, line):
         strs = line.replace("《", "").split("》")
-        return ["", "%s" % strs[0], "", "", "%s" % strs[1], "", ""]
+        if self.is_jing:
+            return ["", "%s" % strs[0], "", "", "", "", ""]
+        else:
+            return ["", "%s" % strs[0], "", "", "%s" % strs[1], "", ""]
 
     def get_ri_yue(self, line):
         code = line.split(")")[1]
