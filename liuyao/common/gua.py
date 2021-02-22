@@ -1,0 +1,2 @@
+class Gua:
+    pass
