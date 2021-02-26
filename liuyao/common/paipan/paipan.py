@@ -6,18 +6,6 @@ from common.utils import init_date
 from liuyao.common.basic import get_liu_shen_by_ri_gan
 from liuyao.common.dazongyi_to_md import DaZongYiTransformer
 
-default_info = {
-    "datetime": datetime.now(),
-    "tz": "+08",
-    "age": 0,
-    "profession": "",
-    "category": "",
-    "condition": "",
-    "time_limit": 0,
-    "time_limit_type": "天",
-    "prediction_content": ""
-}
-
 
 def __check_code__(code):
     error = False
@@ -39,7 +27,7 @@ def __check_code__(code):
 
 
 class PaiPan:
-    def __init__(self, code, yue="", ri="", info=default_info, print_yin_yang=False):
+    def __init__(self, code, yue="", ri="", info={}, print_yin_yang=False):
         self.code = __check_code__(code)
         self.gua_code = self.code[0:2]
         self.info = info
@@ -74,6 +62,10 @@ class PaiPan:
         self.fu_shen_text = self.ben_gua.fu_shen_list
         self.print_yin_yang = print_yin_yang
         self.ben_gua.set_liu_shen(get_liu_shen_by_ri_gan(self.ri[0]))
+        self.ping_tai = self.__set_ping_tai()
+
+    def __set_ping_tai(self):
+        pass
 
     def print_md(self):
         DaZongYiTransformer(self.__str__(), print=True)
@@ -177,16 +169,3 @@ class PaiPan:
 
 class PaiPanFromCoin(PaiPan):
     pass
-
-
-info = {
-    "年龄": 34,
-    "性别": "男",
-    "职业": "无",
-    "预测策项": "年运",
-    "起卦钥语": "我今年年运如何",
-    "前提条件": "暂无职业",
-    "策项时限": "一年",
-    "起卦时间": "2021-02-12 16:00"
-}
-pp = PaiPan(17236, '壬辰', '丙寅', info, print_yin_yang=False)

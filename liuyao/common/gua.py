@@ -113,6 +113,8 @@ class LiuYaoGua:
         elif self.gong_wei == 7:
             shi_index = 3
         ying_index = (shi_index + 3) % 6
+        if ying_index == 0:
+            ying_index = 6
         return shi, shi_index, ying_index
 
     def __set_liu_qin(self):
