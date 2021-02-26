@@ -34,7 +34,7 @@ def array_to_markdown_table(table_titles, lines=[]):
     return result
 
 
-class Transformer:
+class DaZongYiTransformer:
     titles = ["伏神", '本卦', "阴阳", "应世", "变卦", "阴阳", "六神"]
     tiangan = "甲乙丙丁戊己庚辛壬癸"
     liuqin = "兄孙才财官父"
@@ -42,7 +42,7 @@ class Transformer:
     dizhi = "子丑寅卯辰巳午未申酉戌亥"
     bagua = "乾兑离震巽坎艮坤"
 
-    def __init__(self, text, detailed=False):
+    def __init__(self, text, detailed=False, print=False):
         self.text = text
         self.gua = []
         self.info = {
@@ -65,7 +65,8 @@ class Transformer:
         self.transfer_text_to_markdown()
         self.simple_info_to_markdown()
         self.detailed = detailed
-        self.print_info()
+        if print:
+            self.print_info()
 
     def print_info(self):
         print("# 一、求测内容")
@@ -79,7 +80,7 @@ class Transformer:
         print("# 四、实际情况")
 
     def split_content(self):
-        self.text = self.text.replace("\u3000", "").replace(" ", "")
+        self.text = self.text.replace("\u3000", "").replace(" ", "").replace("\t", "")
         self.content = self.text.split("\n")
 
     def get_info(self):
@@ -217,5 +218,4 @@ class Transformer:
     def transfer_text_to_markdown(self):
         self.gua_to_markdown()
 
-
-Transformer(example)
+# DaZongYiTransformer(example, print=True)

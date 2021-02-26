@@ -2,7 +2,3 @@ ephem
 prettytable
 django
 djangorestframework
-easyquotation
-tushare
-pandas
-baostock
