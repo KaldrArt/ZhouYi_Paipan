@@ -1,10 +1,9 @@
-from datetime import datetime
-from liuyao.common.gua import Gua, LiuYaoGua
+from liuyao.common.gua import LiuYaoGua
 from common.jiazi import JiaZi, JiaZiBase
 from common.calendar import Solar2LunarCalendar
 from common.utils import init_date
 from liuyao.common.basic import get_liu_shen_by_ri_gan
-from liuyao.common.dazongyi_to_md import DaZongYiTransformer
+from liuyao.common.paipan_parser.dazongyi_to_md import DaZongYiTransformer
 
 
 def __check_code__(code):
