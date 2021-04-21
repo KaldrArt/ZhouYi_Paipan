@@ -1,20 +1,19 @@
 example = """
-李洪成六爻排盘 www.zhouyi.com.cn/paipan
-求测人年龄:青年　性别:女　职业:无职业
-预测策项:年运
-起卦钥语:我今年年运如何？
-前提条件:暂无职业，想问今年的学业事业财运
-策项时限:一年
-起卦时间:2021年2月17日午时 星期三
-庚寅月　丙申日(辰巳空) 732卦
- 《山火贲》《大　畜》六神
-　　官寅、　　寅、　龙
-　　财子..　　子..　玄
-　　兄戌..应　戌..　虎
-孙申财亥、　　辰、　蛇
-父午兄丑×　　寅、　勾
-　　官卯、艮　子、　雀
-
+李洪成六爻在线摇卦
+www.zhouyi.com.cn/paipan
+求测人年龄:32 性别:女
+预测策项:项目前景
+起卦钥语:我从事基因与轻食配餐项目是否有好的收益？
+前提条件:还在筹划调研阶段
+起卦时间:2021年4月8日未时
+壬辰月 丙戌日(午未空)531234卦
+  《家 人》 《天水讼》 六神
+   兄卯、    戌、  龙
+   孙巳、 应  申、  玄
+   才未×    午、  虎
+官酉：父亥○    午..  蛇
+   才丑× 巽  辰、  勾
+   兄卯○    寅..  雀
 """
 
 
@@ -53,7 +52,8 @@ class DaZongYiTransformer:
             "content": "",
             "condition": "",
             "time": "",
-            "code": ""
+            "code": "",
+            "timelimit": ""
         }
         self.content = []
         self.is_jing = False
@@ -91,7 +91,9 @@ class DaZongYiTransformer:
                     strs = line.split(":")
                     self.info['gender'] = strs[2][0]
                     self.info['age'] = strs[1].replace("性别", "")
-                    self.info['profession'] = strs[3]
+                    self.info['profession'] = ""
+                    if len(strs) > 3:
+                        self.info['profession'] = strs[3]
                 elif line.startswith("预测策项"):
                     self.info['project'] = line.split(":")[1]
                 elif line.startswith("起卦钥语"):
@@ -155,6 +157,7 @@ class DaZongYiTransformer:
         self.mk_table = array_to_markdown_table(['', ri_yue[1], ri_yue[4], ri_yue[5]], simple_result)
 
     def get_yao(self, line):
+        line = line.replace(":", "").replace("：", "")
         result = ["", "", "", "", "", "", ""]
         dizhi_count = 0
         for s in line:
@@ -218,4 +221,5 @@ class DaZongYiTransformer:
     def transfer_text_to_markdown(self):
         self.gua_to_markdown()
 
-# DaZongYiTransformer(example, print=True)
+
+DaZongYiTransformer(example, print=True)
