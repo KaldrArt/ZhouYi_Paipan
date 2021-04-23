@@ -23,13 +23,13 @@ class DataParser:
         result = {}
         n = len(self.stocks)
         baostock.login()
-        # tushare.set_token(tushare_info['token'])
-        # pro = tushare.pro_api()
+        tushare.set_token(tushare_info['token'])
+        pro = tushare.pro_api()
         i = 0
         for stock in self.stocks:
             rs = baostock.query_stock_basic("%s.%s" % (stock[1], stock[2]))
-            # nc = pro.namechange(ts_code='%s.%s' % (stock[2], stock[1]))
-            # print(nc)
+            nc = pro.namechange(ts_code='%s.%s' % (stock[2], stock[1]))
+            print(nc)
             # 打印结果集
             data_list = []
             while (rs.error_code == '0') & rs.next():
