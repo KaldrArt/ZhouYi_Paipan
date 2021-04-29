@@ -2,7 +2,6 @@ ephem
 prettytable
 django
 djangorestframework
-akshare
 pymongo
 baostock
 tushare
