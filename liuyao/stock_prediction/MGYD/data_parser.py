@@ -4,6 +4,9 @@ from common.database.stock import stock_info_collection, stock_daily_kline_colle
 from datetime import datetime
 import baostock
 import tushare
+import sys
+import time
+from tqdm import tqdm
 
 
 class DataParser:
@@ -26,10 +29,11 @@ class DataParser:
         tushare.set_token(tushare_info['token'])
         pro = tushare.pro_api()
         i = 0
-        for stock in self.stocks:
+        for j in tqdm(range(len(self.stocks))):
+            stock = self.stocks[j]
+            time.sleep(3)
             rs = baostock.query_stock_basic("%s.%s" % (stock[1], stock[2]))
             nc = pro.namechange(ts_code='%s.%s' % (stock[2], stock[1]))
-            print(nc)
             # 打印结果集
             data_list = []
             while (rs.error_code == '0') & rs.next():
@@ -45,12 +49,12 @@ class DataParser:
                     'out_date': None if not stock_info[3] else None,
                     'type': int(stock_info[4]),
                     'status': int(stock_info[5]),
-                    'name_history': []
+                    'name_history': nc.to_dict('records')
                 }
-                stock_info_collection.update_one({"stock": data['stock']}, data, upsert=True)
+                stock_info_collection.update_one({"stock": data['stock']}, {"$set": data}, upsert=True)
             i += 1
-            print("%s-%s/%s" % (stock[0], i, n))
-            break
+            # sys.stdout.flush()
+            # print("%s-%s/%s" % (stock[0], i, n))
         baostock.logout()
         return result
 
