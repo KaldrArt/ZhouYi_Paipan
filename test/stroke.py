@@ -1,9 +1,5 @@
 from liuyao.common.zh_dict.stroke import get_stroke
-from common.database.stock import stock_info_collection
-from liuyao.stock_prediction.MGYD.utils import get_stock_name_strokes
+from common.database.stock import stock_info_collection, stock_daily_kline_collection
+from datetime import datetime
 
-cursor = stock_info_collection.find({})
-for item in cursor:
-    print(item['stock_name'])
-    
-    print(get_stroke("逼"))
+print(datetime.strptime("20190312", '%Y%m%d'))

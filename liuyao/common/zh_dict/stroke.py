@@ -16,4 +16,4 @@ def get_stroke(c):
     elif 131072 <= unicode_ <= 194998:
         return strokes[unicode_ - 80338]
     else:
-        print("c should be a CJK char, or not have stroke in unihan data.")
+        return None

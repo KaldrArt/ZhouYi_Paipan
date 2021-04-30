@@ -1,12 +1,14 @@
 import os
 import csv
-from common.database.stock import stock_info_collection, stock_daily_kline_collection, tushare_info
+from common.database.stock import stock_info_collection, stock_daily_kline_collection, tushare_info, \
+    stock_name_code_collection
 from datetime import datetime
 import baostock
 import tushare
-import sys
+from liuyao.stock_prediction.MGYD.utils import get_stock_name_shu
 import time
 from tqdm import tqdm
+from pprint import pprint
 
 
 class DataParser:
@@ -103,3 +105,43 @@ class DataParser:
                 row['volume'] = float(row['volume'])
                 row['outstanding_share'] = float(row['outstanding_share'])
                 stock_daily_kline_collection.insert(row)
+
+    def parse_stock_name_code(self):
+        cursor = stock_info_collection.find({})
+        for stock in cursor:
+            if stock["name_history"]:
+                # 正常股票，都有历史，起始和终止时间很重要
+                pass
+            else:
+                # 指数等，没有改名历史
+                pass
+
+    def update_date(self):
+        self.update_info_date()
+        self.update_kline_date()
+
+    def update_kline_date(self):
+        pass
+
+    def update_info_date(self):
+        cursor = stock_info_collection.find({})
+        for item in cursor:
+            history = []
+            if item['name_history']:
+                for h in item['name_history']:
+                    h['code'] = get_stock_name_shu(h['name'])
+                    if isinstance(h['start_date'], str):
+                        h['start_date'] = datetime.strptime(h['start_date'], '%Y%m%d')
+                        h['ann_date'] = datetime.strptime(h['ann_date'], '%Y%m%d') if h['ann_date'] else None
+                    history.append(h)
+            self.rebuild_history(history)
+            stock_info_collection.update({"_id": item["_id"]}, {"$set": {"name_history": history}})
+            break
+
+    def rebuild_history(self, history_list):
+        history_list.sort(key=lambda k: k.get("start_date", 0), reverse=False)
+        for i in range(len(history_list) - 1):
+            history_list[i]['end_date'] = history_list[i + 1]['start_date']
+
+    def update_kline_code(self):
+        pass
