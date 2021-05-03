@@ -12,3 +12,6 @@ tushare_info = {
 stock_info_collection = stock_db.get_collection("stock_info")
 stock_daily_kline_collection = stock_db.get_collection("stock_daily_kline")
 stock_name_code_collection = stock_db.get_collection("stock_name_code")
+stock_gua_by_price_collection = stock_db.get_collection("stock_gua_by_price")
+error_collection = stock_db.get_collection("error")
+finish_collection = stock_db.get_collection("finish")
