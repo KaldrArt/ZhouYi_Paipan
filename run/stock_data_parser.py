@@ -17,6 +17,7 @@ import os
 
 stocks = list(stock_info_collection.find({}, {"stock": 1, "name_history": 1, "type": 1}))
 count = len(stocks)
+finished = [i["stock"] for i in list(finish_collection.find({}))]
 
 
 def get_kline_name_code(stock_id, date):
@@ -41,8 +42,11 @@ def get_kline_name_code(stock_id, date):
 
 def update_stock_kline(i):
     stock = stocks[i]
+    if stock['stock'] in finished:
+        return
     # if not stock['stock'] == 'SH601975':
     #     return
+
     klines = list(
         stock_daily_kline_collection.find({"stock": stock['stock']},
                                           {"date": 1, "stock": 1, "open": 1, "high": 1, "low": 1,
@@ -97,7 +101,7 @@ def update_stock_kline(i):
                     update_ob['cmpd2_5days_after'] = 1
             stock_daily_kline_collection.update_one({"_id": kline['_id']}, {"$set": update_ob})
         except Exception as err:
-            error_collection.insert({"kline_id": kline["_id"], "err": err})
+            error_collection.insert({"kline_id": kline["_id"], "err": err.__str__()})
     finish_collection.insert({"stock": stock['stock'], "i": i})
 
 
