@@ -5,7 +5,7 @@ from common.database.stock import stock_info_collection, stock_daily_kline_colle
 from datetime import datetime
 import baostock
 import tushare
-from liuyao.stock_prediction.MGYD.utils import get_stock_name_shu
+from liuyao.stock_prediction.MGYD.utils import get_stock_shu
 import time
 from tqdm import tqdm
 from pprint import pprint
@@ -117,31 +117,36 @@ class DataParser:
                 pass
 
     def update_date(self):
-        self.update_info_date()
-        self.update_kline_date()
-
-    def update_kline_date(self):
+        # self.update_info_date() #20210502完成
+        # self.update_kline_date() #20210502完成
         pass
 
+    def update_kline_date(self):
+        limit = 10000
+        kline_count = stock_daily_kline_collection.count({})
+        count = kline_count // limit + 1
+        for i in tqdm(range(count)):
+            cursor = stock_daily_kline_collection.find({}).skip(i * limit).limit(limit)
+            for item in cursor:
+                formatted_date = datetime.strptime(item['date'], "%Y/%m/%d")
+                stock_daily_kline_collection.update({"_id": item["_id"]}, {"$set": {"date": formatted_date}})
+
     def update_info_date(self):
-        cursor = stock_info_collection.find({})
-        for item in cursor:
+        cursor = list(stock_info_collection.find({}))
+        for i in tqdm(range(len(cursor))):
+            item = cursor[i]
             history = []
             if item['name_history']:
                 for h in item['name_history']:
-                    h['code'] = get_stock_name_shu(h['name'])
+                    h['code'] = get_stock_shu(h['name'], item["stock"])
                     if isinstance(h['start_date'], str):
                         h['start_date'] = datetime.strptime(h['start_date'], '%Y%m%d')
                         h['ann_date'] = datetime.strptime(h['ann_date'], '%Y%m%d') if h['ann_date'] else None
                     history.append(h)
             self.rebuild_history(history)
             stock_info_collection.update({"_id": item["_id"]}, {"$set": {"name_history": history}})
-            break
 
     def rebuild_history(self, history_list):
         history_list.sort(key=lambda k: k.get("start_date", 0), reverse=False)
         for i in range(len(history_list) - 1):
             history_list[i]['end_date'] = history_list[i + 1]['start_date']
-
-    def update_kline_code(self):
-        pass
