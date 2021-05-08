@@ -4,6 +4,9 @@ from common.calendar import Solar2LunarCalendar
 from common.utils import init_date
 from liuyao.common.basic import get_liu_shen_by_ri_gan
 from liuyao.common.paipan_parser.dazongyi_to_md import DaZongYiTransformer
+from liuyao.common.zh_dict.stroke import get_stroke
+from datetime import datetime
+import math
 
 
 def __check_code__(code):
@@ -26,11 +29,14 @@ def __check_code__(code):
 
 
 class PaiPan:
-    def __init__(self, code, yue="", ri="", info={}, print_yin_yang=False):
+    def __init__(self, code, yue="", ri="", info={"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}, print_yin_yang=False):
         self.code = __check_code__(code)
         self.gua_code = self.code[0:2]
         self.info = info
         self.time = info['起卦时间']
+        if not self.time:
+            self.time = datetime.now().strftime("%Y/%m/%dT%H:%M:%S")
+            info['起卦时间'] = datetime.now().strftime("%Y年%m月%d日%H:%M:%S")
         if not yue or not ri:
             self.date, self.solar_to_lunar_date, _ = init_date(self.time)
             self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(self.solar_to_lunar_date)
@@ -166,5 +172,43 @@ class PaiPan:
         pass
 
 
-class PaiPanFromCoin(PaiPan):
-    pass
+class PaiPanFromSentence(PaiPan):
+    def __init__(self, chars="", yue="", ri="", shi="", info={"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""},
+                 print_yin_yang=False):
+        self.chars = chars
+        if not shi:
+            self.shi = "子丑寅卯辰巳午未申酉戌亥".index("子丑寅卯辰巳午未申酉戌亥子"[math.ceil(datetime.now().hour / 2)]) + 1
+        else:
+            self.shi = "子丑寅卯辰巳午未申酉戌亥".index(shi) + 1
+        self.strokes = self.get_stroke(chars)
+        code = self.get_code(self.strokes, self.shi)
+        super(PaiPanFromSentence, self).__init__(code, yue, ri, info=info, print_yin_yang=print_yin_yang)
+
+    def get_code(self, strokes, shi):
+        char_count = len(strokes)
+        shang_gua = sum(strokes[0:char_count // 2]) % 8
+        if shang_gua == 0:
+            shang_gua = 8
+        xia_gua = sum(strokes[char_count // 2:]) % 8
+        if xia_gua == 0:
+            xia_gua = 8
+        dong_yao = (sum(strokes) + shi) % 6
+        if dong_yao == 0:
+            dong_yao = 6
+        return shang_gua * 100 + xia_gua * 10 + dong_yao
+
+    def get_stroke(self, chars):
+        stroke_count_and_alphabet_index = []
+        alphabets = "abcdefghijklmnopqrstuvwxyz"
+        nums = "0123456789"
+        alphabets += alphabets.upper()
+        for char in chars:
+            if char in alphabets:
+                stroke_count_and_alphabet_index.append(alphabets.index(char))
+            elif char in nums:
+                stroke_count_and_alphabet_index.append(nums.index(char))
+            else:
+                n = get_stroke(char)  # 括号等没有笔画
+                if n:
+                    stroke_count_and_alphabet_index.append(n)
+        return stroke_count_and_alphabet_index

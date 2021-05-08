@@ -221,5 +221,4 @@ class DaZongYiTransformer:
     def transfer_text_to_markdown(self):
         self.gua_to_markdown()
 
-
-DaZongYiTransformer(example, print=True)
+# DaZongYiTransformer(example, print=True)

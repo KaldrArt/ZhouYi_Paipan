@@ -51,8 +51,3 @@ class TimeGua:
             return result
         else:
             return 6
-
-
-print("前提：张青海总要辞职，何总留不下来他。熊总还没正式回来，压力很大。")
-print("用张青海姓名笔画数起时空卦，张青海为什么要从飞扬辞职？")
-TimeGua(25)
