@@ -55,7 +55,7 @@ def qi_gua(argv):
     content = ""
     number = ""
     info = {
-        "年龄": "", "性别": "", "职业": "", "起卦时间": setup_time.strftime('%Y/%m/%dT%H:%M:%S')
+        "年龄": "34", "性别": "男", "职业": "IT", "起卦时间": setup_time.strftime('%Y/%m/%dT%H:%M:%S')
     }
     only_help = False
     print_bar = False
