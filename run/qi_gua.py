@@ -3,6 +3,7 @@ import sys
 import getopt
 from datetime import datetime
 import re
+import pyperclip
 
 
 def print_help():
@@ -13,25 +14,25 @@ def print_help():
     
     参数说明：
     起卦内容参数：
-    -t, --time      事项时间，即卦日月所在时间。如果不输入，则取起卦时间。无起卦时间则取当前时间。
-                    格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12
-    -c, --content   起卦内容，用于文字起卦，优先级最高。
-    -n, --number    卦码起卦，优先级第二。
+        -t, --time      事项时间，即卦日月所在时间。如果不输入，则取起卦时间。无起卦时间则取当前时间。
+                        格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12
+        -c, --content   起卦内容，用于文字起卦，优先级最高。
+        -n, --number    卦码起卦，优先级第二。
     
     卦主内容参数：
-    -g, --gender    卦主性别，0女1男，F女M男，也可以直接输入男女。
-    -a, --age       卦主年龄。
-    -r, --role      卦主职业。
+        -g, --gender    卦主性别，0女1男，F女M男，也可以直接输入男女。
+        -a, --age       卦主年龄。
+        -r, --role      卦主职业。
     
     详细设置卦所在时间和起卦时间参数：
-    -s,-e, --setupTime 起卦时间，不指定则默认为当前时间。
-                    格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12。
-    -y, --year      卦年，数字。默认是起卦时间。如果输入-t则忽略本参数。
-    -m, --month     卦月，数字。默认是起卦时间。如果输入-t则忽略本参数。
-    -d, --day       卦日，数字。默认是起卦时间。如果输入-t则忽略本参数。
-    -h, --hour      卦小时，数字，24小时制。默认是起卦时间。
+        -s,-e, --setupTime 起卦时间，不指定则默认为当前时间。
+                        格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12。
+        -y, --year      卦年，数字。默认是起卦时间。如果输入-t则忽略本参数。
+        -m, --month     卦月，数字。默认是起卦时间。如果输入-t则忽略本参数。
+        -d, --day       卦日，数字。默认是起卦时间。如果输入-t则忽略本参数。
+        -h, --hour      卦小时，数字，24小时制。默认是起卦时间。
     
-    -p, --printBar  打印卦码，不需要加参数。
+        -p, --printBar  打印卦码，不需要加参数。
     """
 
     print(t)
@@ -142,4 +143,7 @@ def qi_gua(argv):
 
 
 if __name__ == '__main__':
-    qi_gua(sys.argv[1:])
+    if len(sys.argv) > 1:
+        qi_gua(sys.argv[1:])
+    else:
+        pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')

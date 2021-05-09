@@ -8,6 +8,7 @@ from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
 import math
 import re
+import pyperclip
 
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
@@ -149,6 +150,7 @@ class PaiPan:
                 else:
                     s += ".."
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
+            pyperclip.copy(s.replace("\t", "    "))
             return s
         else:
             s += "\n"
@@ -178,6 +180,7 @@ class PaiPan:
                 if self.print_yin_yang:
                     s += "    "
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
+            pyperclip.copy(s.replace("\t", "    "))
             return s
 
     def check_paipan_info(self):
