@@ -3,31 +3,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - asgiref=3.3.4=pyhd3eb1b0_0
-  - ca-certificates=2020.12.5=h033912b_0
-  - certifi=2020.12.5=py38h50d1736_1
-  - krb5=1.17.1=hddcf347_0
-  - libcxx=10.0.0=1
-  - libedit=3.1.20210216=h9ed2024_1
-  - libffi=3.3=hb1e8313_2
-  - libpq=12.2=h051b688_0
-  - ncurses=6.2=h0a44026_1
-  - openssl=1.1.1k=h0d85af4_0
-  - pip=21.0.1=py38hecd8cb5_0
-  - psycopg2=2.8.6=py38hbcfaee0_1
-  - pyperclip=1.8.1=pyhd3deb0d_0
-  - python=3.8.8=h88f2d9e_5
-  - python_abi=3.8=1_cp38
-  - pytz=2021.1=pyhd3eb1b0_0
-  - readline=8.1=h9ed2024_0
-  - setuptools=52.0.0=py38hecd8cb5_0
-  - sqlite=3.35.4=hce871da_0
-  - sqlparse=0.4.1=py_0
-  - tk=8.6.10=hb0a8c7a_0
-  - tqdm=4.59.0=pyhd3eb1b0_1
-  - wheel=0.36.2=pyhd3eb1b0_0
-  - xz=5.2.5=h1de35cc_0
-  - zlib=1.2.11=h1de35cc_3
   - pip:
     - baostock==0.8.8
     - beautifulsoup4==4.9.3
@@ -40,6 +15,7 @@ dependencies:
     - lxml==4.6.3
     - numpy==1.20.2
     - pandas==1.2.4
+    - tqdm==4.59.0
     - prettytable==2.1.0
     - pymongo==3.11.4
     - python-dateutil==2.8.1
@@ -51,4 +27,5 @@ dependencies:
     - urllib3==1.26.4
     - wcwidth==0.2.5
     - websocket-client==0.59.0
-prefix: /Users/kaldr/opt/anaconda3/envs/bazi
+    - pyperclip==1.8.1
+prefix: /home/kaldr/anaconda3/envs/bazi

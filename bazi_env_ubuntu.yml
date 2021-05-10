@@ -1,0 +1,56 @@
+name: bazi
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=1_gnu
+  - ca-certificates=2020.12.5=ha878542_0
+  - certifi=2020.12.5=py39hf3d152e_1
+  - ld_impl_linux-64=2.35.1=hea4e1c9_2
+  - libffi=3.3=h58526e2_2
+  - libgcc-ng=9.3.0=h2828fa1_19
+  - libgomp=9.3.0=h2828fa1_19
+  - libstdcxx-ng=9.3.0=h6de172a_19
+  - ncurses=6.2=h58526e2_4
+  - openssl=1.1.1k=h7f98852_0
+  - pip=21.1.1=pyhd8ed1ab_0
+  - pyperclip=1.8.1=pyhd3deb0d_0
+  - python=3.9.2=hffdb5ce_0_cpython
+  - python_abi=3.9=1_cp39
+  - readline=8.1=h46c0cb4_0
+  - setuptools=49.6.0=py39hf3d152e_3
+  - sqlite=3.35.5=h74cdb3f_0
+  - tk=8.6.10=h21135ba_1
+  - tzdata=2021a=he74cb21_0
+  - wheel=0.36.2=pyhd3deb0d_0
+  - xz=5.2.5=h516909a_1
+  - zlib=1.2.11=h516909a_1010
+  - pip:
+    - asgiref==3.3.4
+    - baostock==0.8.8
+    - beautifulsoup4==4.9.3
+    - bs4==0.0.1
+    - chardet==4.0.0
+    - django==3.2.2
+    - djangorestframework==3.12.4
+    - ephem==3.7.7.1
+    - idna==2.10
+    - lxml==4.6.3
+    - numpy==1.20.2
+    - pandas==1.2.4
+    - prettytable==2.1.0
+    - pymongo==3.11.4
+    - python-dateutil==2.8.1
+    - pytz==2021.1
+    - requests==2.25.1
+    - simplejson==3.17.2
+    - six==1.16.0
+    - soupsieve==2.2.1
+    - sqlparse==0.4.1
+    - tqdm==4.59.0
+    - tushare==1.2.62
+    - urllib3==1.26.4
+    - wcwidth==0.2.5
+    - websocket-client==0.59.0
+prefix: /home/kaldr/anaconda3/envs/bazi
