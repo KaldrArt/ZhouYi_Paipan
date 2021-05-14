@@ -3,7 +3,6 @@ from liuyao.common.zh_dict.stroke import get_stroke
 alphabets = " abcdefghijklmnopqrstuvwxyz"
 nums = "0123456789"
 
-
 def name_code(name):
     unicode_count = []
     stroke_count_and_alphabet_index = []
@@ -25,6 +24,7 @@ def name_code(name):
         "unicode_count": unicode_count,
         "basic_count": stroke_count_and_alphabet_index
     }
+
 
 
 def stock_id_code(stock_id):
