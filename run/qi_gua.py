@@ -1,4 +1,4 @@
-from liuyao.common.paipan.paipan import PaiPanFromSentence, PaiPanFromTime, PaiPan
+from liuyao.common.paipan.paipan import PaiPanFromSentence, PaiPanFromTime, PaiPan, normalize_num_code
 import sys
 import getopt
 from datetime import datetime
@@ -64,55 +64,63 @@ def qi_gua(argv):
         opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e",
                                    ["year=", "content=", "hour=", "month=", "day=", "number=", "time=", "printBar",
                                     "gender=", "age=", "role=", "setupTime=", "help"])
-
-        for cmd, arg in opts:
-            if cmd in ['--help']:
-                only_help = True
-                break
-            elif cmd in ['-r', '--role']:
-                info['职业'] = arg
-            elif cmd in ['-p', "--printBar"]:
-                print_bar = True
-            elif cmd in ['-g', "--gender"]:
-                if arg in "01":
-                    info['性别'] = "女男"[int(arg)]
-                elif arg in "FT":
-                    info['性别'] = '女男'["FT".index(arg)]
-                elif arg in '男女':
-                    info['性别'] = arg
-            elif cmd in ['-a', "--age"]:
-                if re.match(r'^\d+$', arg):
-                    info['年龄'] = arg
-            elif cmd in ['-t', '--time']:
-                time = change_time_format(arg)
-                if time.year == year and time.month == month and time.day == day and time.hour == hour:
-                    # 如果时间就是当前时间，那么置为False，也就是通过year等字段取值
-                    time = False
-                else:
-                    info['事项时间'] = time.strftime("%Y/%m/%dT%H:%M:%S")
-                    year, month, day, hour = time.year, time.month, time.day, time.hour
-            elif cmd in ['-s', '-e', "--setupTime"]:
-                if arg:
-                    setup_time_set = True
-                setup_time = change_time_format(arg)
-                info["起卦时间"] = setup_time.strftime("%Y/%m/%dT%H:%M:%S")
-            elif cmd in ['-m', '--month']:
-                month = arg
-            elif cmd in ['-d', '--day']:
-                day = arg
-            elif cmd in ['-h', "--hour"]:
-                hour = arg
-            elif cmd in ['-c', '--content']:
-                content = arg
-                info['求测内容'] = content
-                info['起卦方式'] = '文字笔画起卦'
-            elif cmd in ['-n', '--number']:
-                if re.match(r'^\d+$', arg):
-                    number = int(arg)
+        if len(opts):
+            for cmd, arg in opts:
+                if cmd in ['--help']:
+                    only_help = True
+                    break
+                elif cmd in ['-r', '--role']:
+                    info['职业'] = arg
+                elif cmd in ['-p', "--printBar"]:
+                    print_bar = True
+                elif cmd in ['-g', "--gender"]:
+                    if arg in "01":
+                        info['性别'] = "女男"[int(arg)]
+                    elif arg in "FT":
+                        info['性别'] = '女男'["FT".index(arg)]
+                    elif arg in '男女':
+                        info['性别'] = arg
+                elif cmd in ['-a', "--age"]:
+                    if re.match(r'^\d+$', arg):
+                        info['年龄'] = arg
+                elif cmd in ['-t', '--time']:
+                    time = change_time_format(arg)
+                    if time.year == year and time.month == month and time.day == day and time.hour == hour:
+                        # 如果时间就是当前时间，那么置为False，也就是通过year等字段取值
+                        time = False
+                    else:
+                        info['事项时间'] = time.strftime("%Y/%m/%dT%H:%M:%S")
+                        year, month, day, hour = time.year, time.month, time.day, time.hour
+                elif cmd in ['-s', '-e', "--setupTime"]:
+                    if arg:
+                        setup_time_set = True
+                    setup_time = change_time_format(arg)
+                    info["起卦时间"] = setup_time.strftime("%Y/%m/%dT%H:%M:%S")
+                elif cmd in ['-m', '--month']:
+                    month = arg
+                elif cmd in ['-d', '--day']:
+                    day = arg
+                elif cmd in ['-h', "--hour"]:
+                    hour = arg
+                elif cmd in ['-c', '--content']:
+                    content = arg
+                    info['求测内容'] = content
+                    info['起卦方式'] = '文字笔画起卦'
+                elif cmd in ['-n', '--number']:
+                    if re.match(r'^\d+$', arg):
+                        number = int(arg)
+                    info['起卦方式'] = '卦码起卦'
+            if not time and setup_time_set:
+                year, month, day, hour = setup_time.year, setup_time.month, setup_time.day, setup_time.hour
+                print(year, month, day, hour)
+        else:
+            param = args[0]
+            if re.match(r'^\d+$', param):
+                number = param
                 info['起卦方式'] = '卦码起卦'
-        if not time and setup_time_set:
-            year, month, day, hour = setup_time.year, setup_time.month, setup_time.day, setup_time.hour
-            print(year, month, day, hour)
+            else:
+                content = param
+                info['起卦方式'] = '文字笔画起卦'
     except getopt.GetoptError as e:
         print("%s" % e)
     finally:
@@ -124,7 +132,7 @@ def qi_gua(argv):
                                          print_yin_yang=print_bar)
                 print(gua)
             elif number:
-                gua = PaiPan(number, nian=year, yue=month, ri=day, shi=hour, info=info,
+                gua = PaiPan(normalize_num_code(number), nian=year, yue=month, ri=day, shi=hour, info=info,
                              print_yin_yang=print_bar)
                 print(gua)
             else:
@@ -135,7 +143,8 @@ def qi_gua(argv):
                     print(gua)
                 # 如果分开设置了卦的时间
                 elif year and month and day and hour:
-                    gua = PaiPanFromTime(nian=year, yue=month, ri=day, shi=hour, info=info, print_yin_yang=print_bar)
+                    gua = PaiPanFromTime(nian=str(year), yue=str(month), ri=str(day), shi=str(hour), info=info,
+                                         print_yin_yang=print_bar)
                     print(gua)
                 # 如果时间无效
                 else:

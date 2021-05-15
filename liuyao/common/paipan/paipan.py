@@ -13,11 +13,27 @@ import pyperclip
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
 
+def normalize_num_code(input_code):
+    result = []
+    for i, c in enumerate(str(input_code)):
+        ic = int(c)
+        m = 6
+        if i in [0, 1]:
+            m = 8
+        mc = ic % m
+        if mc == 0:
+            mc = m
+        result.append(str(mc))
+        i += 1
+
+    return "".join(result)
+
+
 def __check_code__(code):
     error = False
     code_str = str(code)
     dong_str = code_str[2:]
-    if code < 11 or "9" in code_str or "0" in code_str:
+    if int(code) < 11 or "9" in code_str or "0" in code_str:
         error = True
     elif len(code_str) > 2:
         if "7" in dong_str or "8" in dong_str or '9' in dong_str:
@@ -219,7 +235,7 @@ class PaiPanFromTime(PaiPan):
                     print("输入的小时无效，应该输入24小时制的数字")
         code = self.get_time_code()
         super(PaiPanFromTime, self).__init__(code, info=info, print_yin_yang=print_yin_yang, nian=self.year,
-                                             yue=self.yue, )
+                                             yue=self.month, )
 
     def get_time_code(self):
         s_num = self.year + self.month + self.day
@@ -271,7 +287,10 @@ class PaiPanFromSentence(PaiPan):
         alphabets += alphabets.upper()
         for char in chars:
             if char in alphabets:
-                stroke_count_and_alphabet_index.append(alphabets.index(char))
+                c_a_index = alphabets.index(char) + 1
+                if c_a_index > 26:
+                    c_a_index -= 26
+                stroke_count_and_alphabet_index.append(c_a_index)
             elif char in nums:
                 stroke_count_and_alphabet_index.append(nums.index(char))
             else:
