@@ -120,6 +120,7 @@ def qi_gua(argv):
                 info['起卦方式'] = '卦码起卦'
             else:
                 content = param
+                info['求测内容'] = content
                 info['起卦方式'] = '文字笔画起卦'
     except getopt.GetoptError as e:
         print("%s" % e)
@@ -153,6 +154,7 @@ def qi_gua(argv):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
+        print()
         qi_gua(sys.argv[1:])
     else:
         pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
