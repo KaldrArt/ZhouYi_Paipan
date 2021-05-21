@@ -12,7 +12,6 @@ conda env create -f ./ubuntu_py39_bazi.yml
 
 ```shell
 sudo apt-get install libvips-dev
-npm install -g yarn
-yarn global add framework7 cordova coffeescript @babel/core
+npm i -g framework7 cordova coffeescript @babel/core
 ```
 

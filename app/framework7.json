@@ -1,0 +1,42 @@
+{
+  "cwd": "/home/kaldr/PycharmProjects/bazi/app",
+  "type": [
+    "web",
+    "pwa",
+    "cordova"
+  ],
+  "name": "yi_coder",
+  "framework": "svelte",
+  "template": "tabs",
+  "bundler": "webpack",
+  "cssPreProcessor": "stylus",
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "webpack": {
+    "developmentSourceMap": true,
+    "productionSourceMap": true,
+    "hashAssets": false,
+    "preserveAssetsPaths": false,
+    "inlineAssets": true
+  },
+  "pkg": "io.framework7.myapp",
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios",
+      "android",
+      "electron"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen"
+    ]
+  }
+}

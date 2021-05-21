@@ -7,4 +7,6 @@ from analyzer.basic_analyzer import BasicAnalyzer
 # BasicAnalyzer("1987/8/12 17:18", True)
 # BasicAnalyzer("1988/12/29 22:18", False)
 # BasicAnalyzer("2021/3/20 11:35", False)
-BasicAnalyzer('1979/10/23 17:30', False)
+# BasicAnalyzer('1979/10/23 17:30', False)
+# BasicAnalyzer('1953/5/7 11:00', False)
+BasicAnalyzer("2003/7/23 21:00", True)
