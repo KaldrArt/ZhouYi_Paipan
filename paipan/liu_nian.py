@@ -18,3 +18,4 @@ class LiuNian(JiaZiBase):
         tiangan, dizhi = get_year_jia_zi(year)
         super().__init__(tiangan, dizhi, liu_nian_index)
         self.age = year - birth_year
+   

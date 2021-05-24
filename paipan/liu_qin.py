@@ -1,6 +1,8 @@
 from enum import Enum
 from common import *
 from paipan.pai_pan import PaiPan
+import prettytable as pt
+import sys
 
 liu_qin_list = ["偏印", "正印",
                 "偏官", "正官",
@@ -16,7 +18,7 @@ class LiuQin:
         self.yong_shen = False
         self.tou = False
         self.jia_zi = None
-        self.position_name = False
+        self.position_name = ""
         self.relation = effect_gan.shi_shen_relation[base_gan.name]
         self.position_id = -1
 
@@ -50,7 +52,15 @@ class LiuQin:
 class LiuQinBasic:
     def __init__(self, pai_pan: PaiPan):
         self.pai_pan = pai_pan
-        self.liu_qin = self.generate_liu_qin()
+        self.liu_qin: dict = self.generate_liu_qin()
+
+    def __str__(self):
+        tb = pt.PrettyTable(encoding=sys.stdout.encoding)
+        tb.field_names = ['六亲', '天干', '透干', '地支']
+        for liu_qin_name in self.liu_qin:
+            liu_qin_ob = self.liu_qin[liu_qin_name]
+            tb.add_row([liu_qin_name, liu_qin_ob.effect_gan.name, liu_qin_ob.position_name, ""])
+        return tb.__str__()
 
     def generate_liu_qin(self):
         pai_pan_ba_zi_tian_gans = [

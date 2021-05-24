@@ -26,9 +26,9 @@
   <Views tabs class="safe-areas">
     <!-- Tabbar for switching views-tabs -->
     <Toolbar tabbar labels bottom>
-      <Link tabLink="#view-prediction" tabLinkActive iconIos="f7:sun_haze_fill" iconAurora="f7:sun_haze_fill" iconMd="f7:sun_haze_fill" text="预测" />
+      <Link tabLink="#view-prediction" tabLinkActive iconIos="f7:square_line_vertical_square_fill" iconAurora="f7:square_line_vertical_square_fill" iconMd="f7:square_line_vertical_square_fill" text="预测" />
       <Link tabLink="#view-calendar" iconIos="f7:calendar_today" iconAurora="f7:calendar_today" iconMd="f7:calendar_today" text="情感日历" />
-      <Link tabLink="#view-shopping" iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="f7:cart_fill" text="运势强化" />
+      <Link tabLink="#view-shopping" iconIos="f7:cart_fill" iconAurora="f7:cart_fill" iconMd="f7:cart_fill" text="运势提速" />
       <Link tabLink="#view-shopping" iconIos="f7:heart_fill" iconAurora="f7:heart_fill" iconMd="f7:heart_fill" text="情侣版" />
     </Toolbar>
 

@@ -15,15 +15,19 @@ class PaiPanPrinter:
     def print_bazi(self):
         ri_zhu = self.pai_pan.ri_zhu.tian_gan.name
         tb = pt.PrettyTable(encoding=sys.stdout.encoding)
-        tb.field_names = ['性别',
-                          self.pai_pan.nian_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
-                          self.pai_pan.yue_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
-                          "日主",
-                          self.pai_pan.shi_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
-                          "空亡",
-                          "胎元"
-                          ]
+        titles = ['性别',
+                  self.pai_pan.nian_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
+                  self.pai_pan.yue_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
+                  "日主",
+                  self.pai_pan.shi_zhu.tian_gan.shi_shen_relation[ri_zhu].name,
+                  "空亡",
+                  "胎元"
+                  ]
+        t_u = set(titles)
+        if not (len(t_u) == len(titles)):
+            tb._validate_field_names = lambda *a, **k: None
 
+        tb.field_names = titles
         tb.add_row(["乾造" if self.pai_pan.gender else "坤造",
                     self.pai_pan.nian_zhu.tian_gan.name,
                     self.pai_pan.yue_zhu.tian_gan.name,
@@ -61,13 +65,13 @@ class PaiPanPrinter:
         column = 0
         for item in self.pai_pan.da_yun.da_yun_list:
             dayun_item: DaYunDetail = item
-            title.append(dayun_item.start_year)
             title.append(dayun_item.name)
+            title.append(dayun_item.start_year)
             row = 0
             for inner_item in dayun_item.liu_nian_list:
                 inner_liunian: LiuNian = inner_item
-                content[row][column * 2] = "%s" % inner_liunian.year
-                content[row][column * 2 + 1] = "%s" % inner_liunian.name
+                content[row][column * 2 + 1] = "%s年%s岁" % (str(inner_liunian.year)[2:], inner_liunian.age)
+                content[row][column * 2] = "%s" % inner_liunian.name
                 row += 1
             column += 1
         tb = pt.PrettyTable(encoding=sys.stdout.encoding)
