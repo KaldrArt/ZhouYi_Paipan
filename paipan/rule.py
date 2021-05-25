@@ -7,15 +7,30 @@ from paipan.position import Position
 
 规则分为两种，一种是断语，将断语加到指定的地方，一种是分数，将算到的分数加到指定的地方
 而无论是断语还是分数，都可以放在命局、六亲项目、流年、大运上。
+
+运算规则：
+
+1. 搜索组合：从命局和大运里面找符合条件的内容，例如组成了三合局、三会局、神煞，而不用管生克制化规律
+    1.1 不指定目标位置，全局搜索，例如找三合局、三会局、找伤官见官
+    1.2 指定一个目标位置，搜索其他符合条件的作用位置，例如找神煞、找日干的三合水局
+    1.3 指定多个目标位置，搜索其他符合条件的作用位置，例如找通关
+2. 搜索作用规律：例如指定了一柱，搜索
+    
 """
 
 
 class RuleType(Enum):
+    """
+    两种类型，一种是最终生成断语，一种是生成分数
+    """
     断语 = "断语"
     分数 = "分数"
 
 
 class SubRuleType(Enum):
+    """
+    子类型，将断语和分数放到哪个分类里
+    """
     命局 = "命局"
     命局神煞 = "命局神煞"
     六亲 = '六亲'
@@ -34,27 +49,49 @@ class SubRuleType(Enum):
 
 
 class Rule:
-    def __init__(self, paipan: PaiPan,
+    def __init__(self,
+                 name,
+                 paipan: PaiPan,
                  analyzer_result,
-                 target_position: Position = Position.日干,
+                 target_positions: [Position] = [Position.日干],
                  effect_positions: [Position] = [Position.年干],
                  rule_types: [RuleType] = [RuleType.断语],
-                 sub_rule_types: [SubRuleType] = [SubRuleType.命局]):
+                 sub_rule_types: [SubRuleType] = [SubRuleType.命局]
+                 ):
+        self.name = name
         self.paipan = paipan
         self.analyzer_result = analyzer_result
-        self.target_position = target_position
+        self.target_positions = target_positions
         self.effect_positions = effect_positions
         self.rule_types = rule_types
         self.sub_rule_types = sub_rule_types
+        self.result = {}
         self.run()
 
+    def calculate_fuc(self):
+        pass
+
+    def calculate_result(self, preset_result={}):
+        self.result = preset_result
+        return preset_result
+
+    def build_targets_cause(self, targets, relation):
+        pass
+
+    def build_cause(self, target, effects, relation):
+        return {
+            "position": "",
+            "relations": []
+        }
+
     def run(self):
+        result = self.calculate_result()
         if RuleType.断语 in self.rule_types:
             for sub_type in self.sub_rule_types:
-                self.calculate_text(sub_type)
+                self.calculate_text(sub_type, result)
         elif RuleType.分数 in self.rule_types:
             for sub_type in self.sub_rule_types:
-                self.calculate_score(sub_type)
+                self.calculate_score(sub_type, result)
 
     def calculate_score(self, sub_rule_type: SubRuleType, result: dict = {}):
         if RuleType.分数.value not in self.analyzer_result:
@@ -63,8 +100,9 @@ class Rule:
             self.analyzer_result[RuleType.分数.value][sub_rule_type.value] = {}
         for key in result:
             if key not in self.analyzer_result[RuleType.分数.value][sub_rule_type.value]:
-                self.analyzer_result[RuleType.分数.value][sub_rule_type.value][key] = 0
-            self.analyzer_result[RuleType.分数.value][sub_rule_type.value][key] += result[key]
+                self.analyzer_result[RuleType.分数.value][sub_rule_type.value][key] = {"rule_name": self.name, "value": 0,
+                                                                                     'cause': result[key]['cause']}
+            self.analyzer_result[RuleType.分数.value][sub_rule_type.value][key]['value'] += result[key]['value']
 
     def calculate_text(self, sub_rule_type: SubRuleType, result: dict = {}):
         if RuleType.断语.value not in self.analyzer_result:
@@ -73,5 +111,16 @@ class Rule:
             self.analyzer_result[RuleType.断语.value][sub_rule_type.value] = {}
         for key in result:
             if key not in self.analyzer_result[RuleType.断语.value][sub_rule_type.value]:
-                self.analyzer_result[RuleType.断语.value][sub_rule_type.value][key] = []
-            self.analyzer_result[RuleType.断语.value][sub_rule_type.value][key].append(result[key])
+                self.analyzer_result[RuleType.断语.value][sub_rule_type.value][key] = {"rule_name": self.name,
+                                                                                     "value": [],
+                                                                                     'cause': result[key]['cause']}
+            self.analyzer_result[RuleType.断语.value][sub_rule_type.value][key]['value'].append(result[key]['text'])
+
+
+from common import *
+from pprint import pprint
+
+jia: TianGanBase = TianGan.甲.value
+si: DiZhiBase = DiZhi.巳.value
+pprint(si.relations)
+pprint(jia.relations)

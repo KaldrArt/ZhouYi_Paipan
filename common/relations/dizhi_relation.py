@@ -25,7 +25,8 @@ class DiZhiRelation(Relation):
         self.get_ban_he()
         # 半会
         self.get_ban_hui()
-
+        # 地支长生
+        self.get_zhang_sheng()
         self.set_relation_names()
 
     def get_chong(self):
@@ -87,3 +88,14 @@ class DiZhiRelation(Relation):
         if xing:
             self.name = self.name.replace("==", "=刑=")
             self.name = self.name.replace("--", "-刑-")
+
+    def get_zhang_sheng(self):
+        zhang_sheng_di_zhi_name = di_zhi_zhang_sheng[self.dizhi2.name]
+        zhang_sheng_di_zhi_position = DiZhi[zhang_sheng_di_zhi_name].value.index
+        di_zhi_position = self.dizhi1.index
+        zhang_sheng_index = di_zhi_position - zhang_sheng_di_zhi_position
+        if zhang_sheng_index < 0:
+            zhang_sheng_index += 12  # 一定是一个0-11的正整数
+        zhang_sheng_name = zhang_sheng_list[zhang_sheng_index]
+        self.relations["with_yin_yang"].append(TianGanDiZhiRelationType[zhang_sheng_name])
+        self.relations["without_yin_yang"].append(TianGanDiZhiRelationType[zhang_sheng_name])

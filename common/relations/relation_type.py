@@ -69,3 +69,8 @@ class TianGanDiZhiRelationType(Enum):
     藏干仅本气 = RelationType(name="藏干仅本气", score=100, effect=1)
     藏干其一本气 = RelationType(name="藏干其一本气", score=70, effect=1)
     藏干其二中气 = RelationType(name="藏干其二中气", score=30, effect=1)
+    官杀 = RelationType(name="官杀")
+    印枭 = RelationType(name="印枭")
+    比劫 = RelationType(name="比劫")
+    食伤 = RelationType(name="食伤")
+    财 = RelationType(name='财')

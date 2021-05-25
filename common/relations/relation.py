@@ -1,8 +1,27 @@
 from common.wuxing import WuXingBase
 from common.yi_base import Yi
+from common.zhangsheng import tian_gan_zhang_sheng, di_zhi_zhang_sheng, zhang_sheng_list
 from common.tiangan import TianGan, tian_gan_list, TianGanBase
 from common.dizhi import DiZhi, di_zhi_list, DiZhiBase
 from common.relations.relation_type import *
+
+shishen_map = {
+    "同性相同": "比肩",
+    "异性相同": "劫财",
+    "同性生": "偏印",
+    "异性生": "正印",
+    "同性克": "偏官",
+    "异性克": "正官",
+    "同性被生": "食神",
+    "异性被生": "伤官",
+    "同性被克": "偏财",
+    "异性被克": "正财",
+    "克": "官杀",
+    "被克": "财",
+    "生": "印枭",
+    "被生": "食伤",
+    "相同": "比劫",
+}
 
 
 class Relation:
@@ -24,6 +43,9 @@ class Relation:
     def get_relation(self):
         self.get_wu_xing_relation(self.input1.value.wu_xing.value, self.input2.value.wu_xing.value)
         self.get_sheng_ke()
+
+    def get_shishen(self):
+        pass
 
     def get_with_yin_yang_key(self, name):
         return "%s性%s" % ("同" if self.same_yin_yang else "异", name)
@@ -51,5 +73,13 @@ class Relation:
 
     def get_sheng_ke(self):
         with_yin_yang_key = self.get_with_yin_yang_key(self.wu_xing_relation.name)
+        shishen_without_yinyang = shishen_map[self.wu_xing_relation.name]
+        shishen = shishen_map[with_yin_yang_key]
+        relation_shishen = TianGanDiZhiRelationType[shishen]
+        relation_shishen_without_yinyang = TianGanDiZhiRelationType[shishen_without_yinyang]
         self.relations['without_yin_yang'].append(TianGanDiZhiRelationType[self.wu_xing_relation.name])
+        self.relations['without_yin_yang'].append(relation_shishen_without_yinyang)
+        self.relations['without_yin_yang'].append(relation_shishen_without_yinyang)
         self.relations['with_yin_yang'].append(TianGanDiZhiRelationType[with_yin_yang_key])
+        self.relations['with_yin_yang'].append(relation_shishen)
+        self.relations['with_yin_yang'].append(relation_shishen_without_yinyang)

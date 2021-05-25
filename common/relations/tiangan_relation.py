@@ -1,18 +1,5 @@
 from .relation import *
 
-shishen_map = {
-    "同性相同": "比肩",
-    "异性相同": "劫财",
-    "同性生": "偏印",
-    "异性生": "正印",
-    "同性克": "偏官",
-    "异性克": "正官",
-    "同性被生": "食神",
-    "异性被生": "伤官",
-    "同性被克": "偏财",
-    "异性被克": "正财"
-}
-
 
 class TianGanRelation(Relation):
     def __init__(self, tiangan1: TianGan, tiangan2: TianGan):
@@ -28,7 +15,7 @@ class TianGanRelation(Relation):
 
     def get_relation(self):
         super().get_relation()
-        self.get_shi_shen_relation()
+        # self.get_shi_shen_relation()
         self.get_chong()
         self.get_he()
         self.set_relation_names()

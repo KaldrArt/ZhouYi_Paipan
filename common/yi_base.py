@@ -21,7 +21,6 @@ class YiBase:
         self.yin_yang = False if chars.index(name) % 2 else True
         self.relations = generate_relation_map()
         self.relations_with_yin_yang = generate_relation_map()
-        self.shi_shen_relation = {}
 
 
 class Yi(Enum):
