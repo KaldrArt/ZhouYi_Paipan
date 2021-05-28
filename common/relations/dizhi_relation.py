@@ -55,8 +55,12 @@ class DiZhiRelation(Relation):
         index2 = self.dizhi2.index
         if not index1 == index2:
             if (index1 % 4) == (index2 % 4):
-                self.relations["with_yin_yang"].append(TianGanDiZhiRelationType[self.get_with_yin_yang_key('半合')])
-                self.relations["without_yin_yang"].append(TianGanDiZhiRelationType.半合)
+                if index1 in [0, 3, 6, 9] or index2 in [0, 3, 6, 9]:
+                    self.relations["with_yin_yang"].append(TianGanDiZhiRelationType[self.get_with_yin_yang_key('半合')])
+                    self.relations["without_yin_yang"].append(TianGanDiZhiRelationType.半合)
+                else:
+                    self.relations["with_yin_yang"].append(TianGanDiZhiRelationType.拱合)
+                    self.relations["without_yin_yang"].append(TianGanDiZhiRelationType.拱合)
 
     def get_ban_hui(self):
         index1 = self.dizhi1.index - 2
@@ -67,8 +71,12 @@ class DiZhiRelation(Relation):
             index2 += 12
         if not index1 == index2:
             if (index1 // 3) == (index2 // 3):
-                self.relations["with_yin_yang"].append(TianGanDiZhiRelationType[self.get_with_yin_yang_key('半会')])
-                self.relations["without_yin_yang"].append(TianGanDiZhiRelationType.半会)
+                if index1 in [0, 3, 6, 9] or index2 in [0, 3, 6, 9]:
+                    self.relations["with_yin_yang"].append(TianGanDiZhiRelationType[self.get_with_yin_yang_key('半会')])
+                    self.relations["without_yin_yang"].append(TianGanDiZhiRelationType.半会)
+                else:
+                    self.relations["with_yin_yang"].append(TianGanDiZhiRelationType.拱会)
+                    self.relations["without_yin_yang"].append(TianGanDiZhiRelationType.拱会)
 
     def get_xing(self):
         xing = False

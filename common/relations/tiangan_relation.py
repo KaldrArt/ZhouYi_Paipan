@@ -10,12 +10,13 @@ class TianGanRelation(Relation):
 
     def get_shi_shen_relation(self):
         for r in self.relations['with_yin_yang']:
-            new_type = shishen_map[r.name]
-            self.shi_shen = TianGanDiZhiRelationType[new_type]
+            if r.name in shishen_map:
+                new_type = shishen_map[r.name]
+                self.shi_shen = TianGanDiZhiRelationType[new_type]
 
     def get_relation(self):
         super().get_relation()
-        # self.get_shi_shen_relation()
+        self.get_shi_shen_relation()
         self.get_chong()
         self.get_he()
         self.set_relation_names()

@@ -10,12 +10,20 @@ from paipan.position import Position
 
 运算规则：
 
-1. 搜索组合：从命局和大运里面找符合条件的内容，例如组成了三合局、三会局、神煞，而不用管生克制化规律
-    1.1 不指定目标位置，全局搜索，例如找三合局、三会局、找伤官见官
+1. 搜索组合Search：从命局和大运里面找符合条件的内容，例如组成了三合局、三会局、神煞
+    1.1 不指定目标位置，全局搜索，找三合局、三会局
     1.2 指定一个目标位置，搜索其他符合条件的作用位置，例如找神煞、找日干的三合水局
     1.3 指定多个目标位置，搜索其他符合条件的作用位置，例如找通关
-2. 搜索作用规律：例如指定了一柱，搜索
     
+    1.1~1.3包含：
+        找relation，包括各种关系
+        找name，例如，例如从命局、大运、流年中effect中找到“申子辰”即可
+        找cang_gan，从effect中找到
+        找zhang_sheng，从effect中找到某个长生
+
+2. 计算分数
+    2.1 旺衰的计算
+    2.2 格局的计算
 """
 
 
@@ -53,8 +61,8 @@ class Rule:
                  name,
                  paipan: PaiPan,
                  analyzer_result,
-                 target_positions: [Position] = [Position.日干],
-                 effect_positions: [Position] = [Position.年干],
+                 target_positions: [Position] = [Position.日干],  # 目标干支或柱的位置
+                 effect_positions: [Position] = [Position.年干],  # 作用干支或柱的位置
                  rule_types: [RuleType] = [RuleType.断语],
                  sub_rule_types: [SubRuleType] = [SubRuleType.命局]
                  ):
@@ -117,10 +125,25 @@ class Rule:
             self.analyzer_result[RuleType.断语.value][sub_rule_type.value][key]['value'].append(result[key]['text'])
 
 
-from common import *
-from pprint import pprint
+class SearchRule(Rule):
+    def __init__(self, name,
+                 paipan: PaiPan,
+                 analyzer_result,
+                 target_positions: [Position] = [Position.日干],  # 目标干支或柱的位置
+                 effect_positions: [Position] = [Position.年干],  # 作用干支或柱的位置
+                 rule_types: [RuleType] = [RuleType.断语],
+                 sub_rule_types: [SubRuleType] = [SubRuleType.命局],
+                 search_pattern={},
+                 ):
+        super(SearchRule, self).__init__(
+            name,
+            paipan,
+            analyzer_result,
+            target_positions,
+            effect_positions,
+            rule_types,
+            sub_rule_types
+        )
 
-jia: TianGanBase = TianGan.甲.value
-si: DiZhiBase = DiZhi.巳.value
-pprint(si.relations)
-pprint(jia.relations)
+    def only_search_effect_positions(self):
+        pass

@@ -13,7 +13,11 @@ class TianGanBase(YiBase):
             raise Exception("%s不是有效的天干" % name)
         self.wu_xing = WuXing[wu_xing_list[tian_gan_list.index(name) // 2]]
         self.zhang_sheng = {}
+        self.shi_shen_relation = {}
         self.set_zhangsheng()
+
+    def set_shi_shen_relation(self):
+        pass
 
     def set_zhangsheng(self):
         zhang_sheng_dizhi_index = di_zhi_list.index(tian_gan_zhang_sheng[self.name])
