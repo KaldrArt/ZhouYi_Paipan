@@ -49,11 +49,12 @@ def __check_code__(code):
 
 
 class PaiPan:
-    def __init__(self, code, nian=0, yue=0, ri=0, shi=0, info=default_info, print_yin_yang=False):
+    def __init__(self, code, nian=0, yue=0, ri=0, shi=0, info=default_info, print_yin_yang=False, save=True):
         self.code = __check_code__(code)
         self.gua_code = self.code[0:2]
         self.info = info
         self.time = info['起卦时间']
+        self.save = save
         # 日月完整，用日月来代表事项时间
         if ri and yue:
             if not nian:
@@ -98,12 +99,14 @@ class PaiPan:
         self.print_yin_yang = print_yin_yang
         self.ben_gua.set_liu_shen(get_liu_shen_by_ri_gan(self.ri[0]))
         self.ping_tai = self.__set_ping_tai()
+        if save:
+            self.print_md()
 
     def __set_ping_tai(self):
         pass
 
-    def print_md(self):
-        DaZongYiTransformer(self.__str__(), print=True)
+    def print_md(self, neet_print=False):
+        return DaZongYiTransformer(self.__str__(), print=neet_print, save=self.save)
 
     def __str__(self):
         bengua_strs = self.ben_gua.__str__().split("\n")
@@ -119,6 +122,8 @@ class PaiPan:
                 else:
                     s += key + ":%s" % self.info[key] + "\n"
         # s += "起卦时间：%s%s\n" % (self.nian, self.time)
+        s += "\n"
+        s += "排盘:\n"
         s += "\n"
         s += "%s年 %s月 %s日(%s空) %s卦" % (self.nian, self.yue, self.ri, "".join(i.name for i in self.kong_wang), self.code)
         s += "\n"
@@ -167,6 +172,7 @@ class PaiPan:
                     s += ".."
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
             pyperclip.copy(s.replace("\t", "    "))
+
             return s
         else:
             s += "\n"
@@ -197,6 +203,7 @@ class PaiPan:
                     s += "    "
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
             pyperclip.copy(s.replace("\t", "    "))
+
             return s
 
     def check_paipan_info(self):

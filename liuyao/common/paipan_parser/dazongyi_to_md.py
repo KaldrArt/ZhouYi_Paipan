@@ -1,3 +1,6 @@
+from datetime import datetime
+from common.output import liuyao_gua_output_path
+
 example = """
 李洪成六爻在线摇卦
 www.zhouyi.com.cn/paipan
@@ -40,8 +43,9 @@ class DaZongYiTransformer:
     liushen = "玄蛇雀龙勾虎"
     dizhi = "子丑寅卯辰巳午未申酉戌亥"
     bagua = "乾兑离震巽坎艮坤"
+    output_path = liuyao_gua_output_path
 
-    def __init__(self, text, detailed=False, print=False):
+    def __init__(self, text, detailed=False, print=False, save=False):
         self.text = text
         self.gua = []
         self.info = {
@@ -52,9 +56,11 @@ class DaZongYiTransformer:
             "content": "",
             "condition": "",
             "time": "",
+            "event_time": "",
             "code": "",
             "timelimit": ""
         }
+        self.print = print
         self.content = []
         self.is_jing = False
         self.info_mk_table = ""
@@ -65,19 +71,33 @@ class DaZongYiTransformer:
         self.transfer_text_to_markdown()
         self.simple_info_to_markdown()
         self.detailed = detailed
-        if print:
-            self.print_info()
+
+        print_info = self.print_info()
+        if save:
+            self.save_file(print_info)
+
+    def save_file(self, info):
+        filename = self.output_path + self.info['content'] + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".md"
+        with open(filename, 'w') as f:
+            f.write(info)
+            f.close()
 
     def print_info(self):
-        print("# 一、求测内容")
-        print(self.info_mk_table)
-        print("# 二、卦")
-        print(self.mk_table)
+        h11 = "# 一、求测内容"
+        c11 = self.info_mk_table
+        h12 = "# 二、卦"
+        c12 = self.mk_table
+        c13 = ""
         if self.detailed:
-            print(self.detailed_mk_table)
-        print("# 三、断语")
-        print("")
-        print("# 四、实际情况")
+            c13 = self.detailed_mk_table
+        h13 = "# 三、断语"
+        c14 = ""
+        h14 = "# 四、实际情况"
+        content = [h11, c11, h12, c12, c13, h13, c14, h14]
+        if self.print:
+            for c in content:
+                print(c)
+        return '\n'.join(content)
 
     def split_content(self):
         self.text = self.text.replace("\u3000", "").replace(" ", "").replace("\t", "")
@@ -86,6 +106,8 @@ class DaZongYiTransformer:
     def get_info(self):
         start_gua = False
         for line in self.content:
+            if line.startswith("===="):
+                break
             if not start_gua:
                 if line.startswith("求测人年龄"):
                     strs = line.split(":")
@@ -96,7 +118,7 @@ class DaZongYiTransformer:
                         self.info['profession'] = strs[3]
                 elif line.startswith("预测策项"):
                     self.info['project'] = line.split(":")[1]
-                elif line.startswith("起卦钥语"):
+                elif line.startswith("起卦钥语") or line.startswith("求测内容"):
                     self.info['content'] = line.split(":")[1]
                 elif line.startswith("前提条件"):
                     self.info['condition'] = line.split(":")[1]
@@ -104,6 +126,9 @@ class DaZongYiTransformer:
                     self.info['timelimit'] = line.split(":")[1]
                 elif line.startswith("起卦时间"):
                     self.info['time'] = line.split(":")[1]
+                elif line.startswith("事项时间"):
+                    self.info['event_time'] = line.split(":")[1]
+                elif line.startswith("排盘"):
                     start_gua = True
             else:
                 self.gua.append(line)
@@ -118,8 +143,10 @@ class DaZongYiTransformer:
             ['钥语', self.info['content']],
             ['条件', self.info['condition']],
             ['时限', self.info['timelimit']],
-            ['时间', self.info['time']],
-            ['卦码', self.info['code']]
+            ['起卦时间', self.info['time']],
+            ['事件时间', self.info['event_time']],
+            ['卦码', self.info['code']],
+
         ]
         self.info_mk_table = array_to_markdown_table(mk_titles, mk_lines)
 

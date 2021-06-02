@@ -14,11 +14,14 @@ def print_help():
     
     参数说明：
     起卦内容参数：
-        -t, --time      事项时间，即卦日月所在时间。如果不输入，则取起卦时间。无起卦时间则取当前时间。
-                        格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12
-        -c, --content   起卦内容，用于文字起卦，优先级最高。
-        -n, --number    卦码起卦，优先级第二。
-    
+        -t, --time          事项时间，即卦日月所在时间。如果不输入，则取起卦时间。无起卦时间则取当前时间。
+                            格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12
+        -c, --content       起卦内容，用于文字起卦，优先级最高。
+        -n, --number        卦码起卦，优先级第二。
+        -l, --category      策项
+        -j, --condition     前提条件
+        -k, --time_limit    策项时限
+        
     卦主内容参数：
         -g, --gender    卦主性别，0女1男，F女M男，也可以直接输入男女。
         -a, --age       卦主年龄。
@@ -31,7 +34,7 @@ def print_help():
         -m, --month     卦月，数字。默认是起卦时间。如果输入-t则忽略本参数。
         -d, --day       卦日，数字。默认是起卦时间。如果输入-t则忽略本参数。
         -h, --hour      卦小时，数字，24小时制。默认是起卦时间。
-    
+        
         -p, --printBar  打印卦码，不需要加参数。
     """
 
@@ -61,9 +64,10 @@ def qi_gua(argv):
     only_help = False
     print_bar = False
     try:
-        opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e",
+        opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e:l:j:k:",
                                    ["year=", "content=", "hour=", "month=", "day=", "number=", "time=", "printBar",
-                                    "gender=", "age=", "role=", "setupTime=", "help"])
+                                    "gender=", "age=", "role=", "setupTime=", "help", "category=", "condition=",
+                                    "time_limit="])
         if len(opts):
             for cmd, arg in opts:
                 if cmd in ['--help']:
@@ -71,6 +75,12 @@ def qi_gua(argv):
                     break
                 elif cmd in ['-r', '--role']:
                     info['职业'] = arg
+                elif cmd in ['-l', '--category']:
+                    info['预测策项'] = arg
+                elif cmd in ['-j', '--condition']:
+                    info['前提条件'] = arg
+                elif cmd in ['-k', '--time_limit']:
+                    info['策项时限'] = arg
                 elif cmd in ['-p', "--printBar"]:
                     print_bar = True
                 elif cmd in ['-g', "--gender"]:
@@ -122,6 +132,7 @@ def qi_gua(argv):
                 content = param
                 info['求测内容'] = content
                 info['起卦方式'] = '文字笔画起卦'
+                info['预测策项'] = "杂占"
     except getopt.GetoptError as e:
         print("%s" % e)
     finally:
