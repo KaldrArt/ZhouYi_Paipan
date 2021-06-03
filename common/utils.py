@@ -1,4 +1,12 @@
 from datetime import datetime, timedelta
+import os
+
+
+def mkdir(folder):
+    if os.path.exists(folder):
+        return True
+    else:
+        os.mkdir(folder)
 
 
 def init_date(date: str):

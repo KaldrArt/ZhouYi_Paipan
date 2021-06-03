@@ -1,5 +1,6 @@
 from datetime import datetime
 from common.output import liuyao_gua_output_path
+from common.utils import mkdir
 
 example = """
 李洪成六爻在线摇卦
@@ -52,13 +53,14 @@ class DaZongYiTransformer:
             "age": 0,
             "gender": "男",
             "profession": "",
-            "project": "",
+            "project": "杂占",
             "content": "",
             "condition": "",
             "time": "",
             "event_time": "",
             "code": "",
-            "timelimit": ""
+            "timelimit": "",
+            'method': ""
         }
         self.print = print
         self.content = []
@@ -77,7 +79,9 @@ class DaZongYiTransformer:
             self.save_file(print_info)
 
     def save_file(self, info):
-        filename = self.output_path + self.info['content'] + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".md"
+        folder = self.output_path + self.info['project'] + "/"
+        mkdir(folder)
+        filename = folder + self.info['content'] + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".md"
         with open(filename, 'w') as f:
             f.write(info)
             f.close()
@@ -128,6 +132,8 @@ class DaZongYiTransformer:
                     self.info['time'] = line.split(":")[1]
                 elif line.startswith("事项时间"):
                     self.info['event_time'] = line.split(":")[1]
+                elif line.startswith("起卦方式"):
+                    self.info['method'] = line.split(":")[1]
                 elif line.startswith("排盘"):
                     start_gua = True
             else:
@@ -145,6 +151,7 @@ class DaZongYiTransformer:
             ['时限', self.info['timelimit']],
             ['起卦时间', self.info['time']],
             ['事件时间', self.info['event_time']],
+            ['起卦方式', self.info['method']],
             ['卦码', self.info['code']],
 
         ]

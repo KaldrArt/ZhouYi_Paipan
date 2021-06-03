@@ -4,6 +4,7 @@ import getopt
 from datetime import datetime
 import re
 import pyperclip
+from common.ganzhi_calendar.calendar import Calendar
 
 
 def print_help():
@@ -18,9 +19,10 @@ def print_help():
                             格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12
         -c, --content       起卦内容，用于文字起卦，优先级最高。
         -n, --number        卦码起卦，优先级第二。
-        -l, --category      策项
         -j, --condition     前提条件
         -k, --time_limit    策项时限
+        -l, --category      策项
+        -o, --detail        通过卦码起卦时，用这个参数表示求测内容
         
     卦主内容参数：
         -g, --gender    卦主性别，0女1男，F女M男，也可以直接输入男女。
@@ -64,10 +66,10 @@ def qi_gua(argv):
     only_help = False
     print_bar = False
     try:
-        opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e:l:j:k:",
+        opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e:l:j:k:o:",
                                    ["year=", "content=", "hour=", "month=", "day=", "number=", "time=", "printBar",
                                     "gender=", "age=", "role=", "setupTime=", "help", "category=", "condition=",
-                                    "time_limit="])
+                                    "time_limit=", "detail="])
         if len(opts):
             for cmd, arg in opts:
                 if cmd in ['--help']:
@@ -76,6 +78,8 @@ def qi_gua(argv):
                 elif cmd in ['-r', '--role']:
                     info['职业'] = arg
                 elif cmd in ['-l', '--category']:
+                    if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
+                        arg = "项目前景"
                     info['预测策项'] = arg
                 elif cmd in ['-j', '--condition']:
                     info['前提条件'] = arg
@@ -112,6 +116,9 @@ def qi_gua(argv):
                     day = arg
                 elif cmd in ['-h', "--hour"]:
                     hour = arg
+                elif cmd in ['-o', '--detail']:
+                    if '求测内容' not in info:
+                        info['求测内容'] = arg
                 elif cmd in ['-c', '--content']:
                     content = arg
                     info['求测内容'] = content
@@ -120,9 +127,15 @@ def qi_gua(argv):
                     if re.match(r'^\d+$', arg):
                         number = int(arg)
                     info['起卦方式'] = '卦码起卦'
+            if not info['预测策项']:
+                arg = info['求测内容']
+                if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
+                    info['预测策项'] = "项目前景"
+                elif "何日" in arg or "什么时间" in arg or "什么时候" in arg or '哪天' in arg or "几号" in arg or "几月" in arg:
+                    pass
             if not time and setup_time_set:
                 year, month, day, hour = setup_time.year, setup_time.month, setup_time.day, setup_time.hour
-                print(year, month, day, hour)
+                # print(year, month, day, hour)
         else:
             param = args[0]
             if re.match(r'^\d+$', param):
@@ -131,8 +144,12 @@ def qi_gua(argv):
             else:
                 content = param
                 info['求测内容'] = content
-                info['起卦方式'] = '文字笔画起卦'
+                arg = info['求测内容']
                 info['预测策项'] = "杂占"
+                if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
+                    info['预测策项'] = "项目前景"
+                info['起卦方式'] = '文字笔画起卦'
+
     except getopt.GetoptError as e:
         print("%s" % e)
     finally:
@@ -167,5 +184,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         print()
         qi_gua(sys.argv[1:])
+        c = Calendar()
+        c.print_year()
+
     else:
         pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
