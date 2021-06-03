@@ -23,8 +23,8 @@ class Theme:
         self.title_0 = Back.BLUE + Fore.LIGHTWHITE_EX
         self.workday_1 = Back.LIGHTYELLOW_EX + Fore.BLACK
         self.workday_0 = Back.YELLOW + Fore.BLACK
-        self.weekend_1 = Back.LIGHTBLACK_EX + Fore.WHITE
-        self.weekend_0 = Back.LIGHTBLACK_EX + Fore.WHITE
+        self.weekend_1 = Back.LIGHTBLACK_EX + Fore.BLACK
+        self.weekend_0 = Back.LIGHTBLACK_EX + Fore.BLACK
         self.month_start = Back.BLACK + Fore.WHITE
         self.gan_zhi_yue_start = Back.RED + Fore.WHITE
         self.flag = Back.RESET + Fore.RED
@@ -60,7 +60,7 @@ class Calendar:
                 if not self.simple:
                     char += "  "
             elif line_end_jie_qi:
-                char += self.theme.gan_zhi_yue_start + " " + text + " " + self.theme.flag + ""
+                char += self.theme.gan_zhi_yue_start + " " + text + " " + self.theme.flag + ""
             elif title:
                 char += self.theme.__getattribute__("title_%s" % (self.index % 2)) + " " + text + " "
             else:
