@@ -308,14 +308,17 @@ def jie_after(date: datetime.datetime):
     return result
 
 
-def get_jie_of_year(year: int):
+def get_jie_of_year(year: int, only_jie=True):
     date_str = datetime.datetime(year - 1, 11, 1, 0, 0, 0).strftime("%Y/%m/%d %H:%M:%S")
     jqs = jq(date_str, 28)
     results = []
     for e in jqs:
         name = e[0]
         index = jieqi.index(name)
-        if index % 2 == 1:
+        if only_jie:
+            if index % 2 == 1:
+                results.append(e)
+        else:
             results.append(e)
     return results
 

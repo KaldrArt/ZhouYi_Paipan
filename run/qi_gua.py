@@ -4,7 +4,6 @@ import getopt
 from datetime import datetime
 import re
 import pyperclip
-from common.ganzhi_calendar.calendar import Calendar
 
 
 def print_help():
@@ -44,7 +43,7 @@ def print_help():
 
 
 def change_time_format(time_str):
-    time_str = time_str.replace("/", "-")
+    time_str = time_str.replace("/", "-").replace(" ", "").replace("\t", "")
     if re.match(r'^\d{4}-\d{1,2}-\d{1,2}T\d{1,2}$', time_str):
         return datetime.strptime(time_str, '%Y-%m-%dT%H')
     else:
@@ -127,12 +126,15 @@ def qi_gua(argv):
                     if re.match(r'^\d+$', arg):
                         number = int(arg)
                     info['起卦方式'] = '卦码起卦'
-            if not info['预测策项']:
+            if '预测策项' not in info:
+                info['预测策项'] = ""
                 arg = info['求测内容']
                 if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
                     info['预测策项'] = "项目前景"
                 elif "何日" in arg or "什么时间" in arg or "什么时候" in arg or '哪天' in arg or "几号" in arg or "几月" in arg:
                     pass
+                if not info['预测策项']:
+                    info['预测策项'] = "杂占"
             if not time and setup_time_set:
                 year, month, day, hour = setup_time.year, setup_time.month, setup_time.day, setup_time.hour
                 # print(year, month, day, hour)
@@ -184,8 +186,5 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         print()
         qi_gua(sys.argv[1:])
-        c = Calendar()
-        c.print_year()
-
     else:
         pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')

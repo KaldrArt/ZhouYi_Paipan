@@ -1,7 +1,7 @@
 from common.calendar import Solar2LunarCalendar
 from common.jiazi import JiaZi, JiaZiBase
 from datetime import datetime, timedelta
-from common import *
+from common import di_zhi_list, tian_gan_list
 import math
 from common.utils import init_date
 
