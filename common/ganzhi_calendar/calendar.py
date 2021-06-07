@@ -17,7 +17,32 @@ jie_qi_list = ["立春",
 
 
 class Theme:
-    def __init__(self):
+    def __init__(self, theme="normal"):
+        self.year_empty = Back.RESET + Fore.RESET
+        self.title_1 = Back.RESET + Fore.RESET
+        self.title_0 = Back.RESET + Fore.RESET
+        self.workday_1 = Back.RESET + Fore.RESET
+        self.workday_0 = Back.RESET + Fore.RESET
+        self.weekend_1 = Back.RESET + Fore.RESET
+        self.weekend_0 = Back.RESET + Fore.RESET
+        self.month_start = Back.RESET + Fore.RESET
+        self.gan_zhi_yue_start = Back.RESET + Fore.RESET
+        self.flag = Back.RESET + Fore.RESET
+        self.qi_flag = Back.RESET + Fore.RESET
+        self.qi = Back.RESET + Fore.RESET
+        self.jia = Back.RESET + Fore.RESET
+        self.zi = Back.RESET + Fore.RESET
+        self.today = Back.RESET + Fore.RESET
+        self.today_symbol = Back.RESET + Fore.RESET
+        self.end_separator = Back.RESET + Fore.RESET
+        self.start_separator = Back.RESET + Fore.RESET
+        self.get_theme(theme)
+
+    def get_theme(self, theme="normal"):
+        if theme == "normal":
+            self.normal_theme()
+
+    def normal_theme(self):
         self.year_empty = Back.BLACK
         self.title_1 = Back.LIGHTBLUE_EX + Fore.LIGHTWHITE_EX
         self.title_0 = Back.BLUE + Fore.LIGHTWHITE_EX
@@ -33,7 +58,9 @@ class Theme:
         self.jia = Back.GREEN + Fore.BLACK
         self.zi = Back.BLUE + Fore.WHITE
         self.today = Back.LIGHTMAGENTA_EX + Fore.WHITE
-        self.today_symbol = Fore.LIGHTMAGENTA_EX + Back.MAGENTA
+        self.today_symbol = Fore.LIGHTMAGENTA_EX
+        self.end_separator = Back.LIGHTBLUE_EX
+        self.start_separator = Back.BLUE
 
 
 class Calendar:
@@ -81,10 +108,11 @@ class Calendar:
                 if not self.simple:
                     char += "  "
             elif line_end_jie:
-                char += self.theme.qi + " " + text.split("/")[0] + self.theme.qi_flag + Back.RED + "" + \
+                char += self.theme.end_separator + " " + \
+                        self.theme.qi + " " + text.split("/")[0] + self.theme.qi_flag + Back.RED + "" + \
                         self.theme.gan_zhi_yue_start + text.split("/")[1] + " " + self.theme.flag + ""
             elif line_end_qi:
-                char += self.theme.qi + " " + text + " " + self.theme.qi_flag + ""
+                char += self.theme.end_separator + " " + self.theme.qi + " " + text + " " + self.theme.qi_flag + ""
             elif title:
                 char += self.theme.__getattribute__("title_%s" % (self.index % 2)) + " " + text + " "
             else:
@@ -93,8 +121,8 @@ class Calendar:
                 separate_symbol_right = " "
                 if day.year == datetime.now().year and day.month == datetime.now().month and day.day == datetime.now().day:
                     today = True
-                    separate_symbol_left = self.theme.today_symbol + ""
-                    separate_symbol_right = self.theme.today_symbol + ""
+                    separate_symbol_left = self.theme.today_symbol + ""
+                    separate_symbol_right = self.theme.today_symbol + ""
                 if day.day == 1:
                     month = day.month
                     if month < 10:
@@ -105,7 +133,7 @@ class Calendar:
                 else:
                     if need_gan_zhi_notify:
                         char += self.theme.gan_zhi_yue_start + separate_symbol_left + (
-                            self.theme.today if today else "") + text + separate_symbol_right
+                            self.theme.today if today else "") + text + self.theme.gan_zhi_yue_start + separate_symbol_right
                     else:
                         if qi:
                             char += self.theme.qi
@@ -127,8 +155,10 @@ class Calendar:
                         elif zi_notify and self.calendar_type == "天干":
                             char += self.theme.zi
                         if today:
-                            char += self.theme.today
-                        char += "  " if self.simple else separate_symbol_left + str(date) + separate_symbol_right
+                            separate_symbol_left = char + separate_symbol_left
+                            separate_symbol_right = char + separate_symbol_right
+                            date = self.theme.today + str(date)
+                        char += "  " if self.simple else separate_symbol_left + date + separate_symbol_right
         if not line_end_jie and not line_end_qi:
             self.index += 1
         # if self.index % len(self.titles) == 0:
@@ -147,6 +177,9 @@ class Calendar:
                                       print_type=print_type,
                                       first_day=self.first_day_of_this_month)
         for line in lines:
+            if len(line) == 12:
+                line.append(self.theme.end_separator + " " + Fore.RESET + Back.RESET)
+            line.insert(0, "\t" + self.theme.start_separator + " " + Fore.RESET + Back.RESET)
             print("".join(line))
 
     def print_months(self,
@@ -226,10 +259,10 @@ class Calendar:
                         for k in range(12 - len(line)):
                             line.append(self.get_char(empty_char=True))
                 if line_end_jie or line_end_qi:
+                    jieqi_str = current_jieqi[0] + current_jieqi[1].strftime("%H:%M")
                     line.append(
                         self.get_char(
-                            text="%s / %s月" % (current_jieqi[0], gan_zhi_month) if gan_zhi_month
-                            else "%s" % (current_jieqi[0]),
+                            text="%s / %s月" % (jieqi_str, gan_zhi_month) if gan_zhi_month else "%s" % jieqi_str,
                             print_type=print_type,
                             line_end_jie=line_end_jie,
                             line_end_qi=line_end_qi))
@@ -237,9 +270,9 @@ class Calendar:
                     line_end_qi = False
                 if line:
                     lines.append(line)
-                if (current_month % 12 in [3, 6, 9, 0] and (
-                        19 <= day.day <= 31) and max_months >= 7) and calculated_months < max_months - 1:
-                    lines.append([self.get_char(text=c, title=True) for c in self.titles])
+                # if (current_month % 12 in [3, 6, 9, 0] and (
+                #         19 <= day.day <= 31) and max_months >= 7) and calculated_months < max_months - 1:
+                #     lines.append([self.get_char(text=c, title=True) for c in self.titles])
                 line = []
             else:
                 line.append(self.get_char(day=day, print_type=print_type,
@@ -252,6 +285,7 @@ class Calendar:
             if calculated_months == max_months:
                 break
         lines.append([self.get_char(text=c, title=True) for c in self.titles])
+        # lines.append([self.get_char(text="  ", title=True) for c in self.titles])
         return lines
 
     def print_year(self, print_type='shell'):

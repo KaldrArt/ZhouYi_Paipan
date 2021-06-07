@@ -53,3 +53,10 @@ class KongStrengtch:
 
     """
     pass
+
+
+class TuiStrength:
+    """
+    土化进化退，对旺衰的影响不大
+    """
+    pass
