@@ -22,6 +22,7 @@ def print_help():
         -k, --time_limit    策项时限
         -l, --category      策项
         -o, --detail        通过卦码起卦时，用这个参数表示求测内容
+        -q, --quan          时空加权方式起卦
         
     卦主内容参数：
         -g, --gender    卦主性别，0女1男，F女M男，也可以直接输入男女。

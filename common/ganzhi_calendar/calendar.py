@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from common.calendar import Solar2LunarCalendar, get_jie_of_year
-from colorama import init, Fore, Back, Style
+from colorama import Fore, Back, Style
 
 jie_qi_list = ["立春",
                "惊蛰",

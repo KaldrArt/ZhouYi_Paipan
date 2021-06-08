@@ -69,7 +69,6 @@ def show_calendar(argv):
                 by_year=by_year
             )
 
-
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         print()
