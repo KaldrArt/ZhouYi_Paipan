@@ -171,7 +171,7 @@ class PaiPan:
                 else:
                     s += ".."
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
-            pyperclip.copy(s.replace("\t", "    "))
+            #pyperclip.copy(s.replace("\t", "    "))
 
             return s
         else:
@@ -202,7 +202,7 @@ class PaiPan:
                 if self.print_yin_yang:
                     s += "    "
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
-            pyperclip.copy(s.replace("\t", "    "))
+            #pyperclip.copy(s.replace("\t", "    "))
 
             return s
 

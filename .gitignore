@@ -3,5 +3,5 @@ __pycache__/
 .idea/
 /.gtm/
 node_modules/
-output/
+output/data/liuyao/gua/kaldr/
 *.swp

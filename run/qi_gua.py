@@ -188,4 +188,5 @@ if __name__ == '__main__':
         print()
         qi_gua(sys.argv[1:])
     else:
-        pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
+        pass
+        #pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
