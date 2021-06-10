@@ -3,8 +3,7 @@ import sys
 import getopt
 from datetime import datetime
 import re
-import pyperclip
-
+#import pyperclip
 
 def print_help():
     t = """
@@ -171,7 +170,8 @@ def qi_gua(argv):
                 info['起卦方式'] = "根据事项时间起卦"
                 # 如果设置了卦的时间
                 if time:
-                    gua = PaiPanFromTime(time=time.strftime("%Y-%m-%d %H"), info=info, print_yin_yang=print_bar)
+                    gua = PaiPanFromTime(time=time.strftime(
+                        "%Y-%m-%d %H"), info=info, print_yin_yang=print_bar)
                     print(gua)
                 # 如果分开设置了卦的时间
                 elif year and month and day and hour:
@@ -189,4 +189,4 @@ if __name__ == '__main__':
         qi_gua(sys.argv[1:])
     else:
         pass
-        #pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
+        # pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')

@@ -14,4 +14,6 @@ from analyzer.basic_analyzer import BasicAnalyzer
 # BasicAnalyzer('1970/8/11 13:00', True)  # 身旺格局，原局伤官见官了，如果官杀混杂，给日主加力，就更加容易出事情。戊子运戊戌年，得了白血病，庚子年去世
 # BasicAnalyzer("1993/10/14 15:00", False)  # 身旺克官，甲子运庚子年伤官见官，男朋友车祸
 # BasicAnalyzer("1988/1/7 17:00", False)
-BasicAnalyzer("1955/10/30 21:00", True)
+# BasicAnalyzer("1955/10/30 21:00", True)
+# BasicAnalyzer("1952/1/1 17:00",False)
+BasicAnalyzer("1996/4/1 04:55", False)
