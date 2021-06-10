@@ -54,7 +54,7 @@ class Yan(Ling):
     pass
 
 
-class An(Ling):
+class ChuFu(Ling):
     pass
 
 

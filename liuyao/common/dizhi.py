@@ -5,6 +5,7 @@ liu_qin_list = "兄孙财官父"
 wu_xing_list = '木火土金水'
 
 
+
 class DaZongYi(Yi):
     pass
 

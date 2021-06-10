@@ -1,4 +1,5 @@
 from liuyao.common.gua import LiuYaoGua
+from liuyao.common.prediction.platform import Platform
 from common.jiazi import JiaZi, JiaZiBase
 from common.calendar import Solar2LunarCalendar
 from common.utils import init_date
@@ -8,7 +9,6 @@ from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
 import math
 import re
-import pyperclip
 
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
@@ -103,7 +103,11 @@ class PaiPan:
             self.print_md()
 
     def __set_ping_tai(self):
-        pass
+        result = []
+        for code in self.dong_code:
+            platform = Platform(int(code), self.ben_gua, self.bian_gua)
+            result.append(platform)
+        return result
 
     def print_md(self, neet_print=False):
         return DaZongYiTransformer(self.__str__(), print=neet_print, save=self.save)
@@ -223,7 +227,7 @@ class PaiPanFromTime(PaiPan):
         if time:
             now = datetime.strptime(time, '%Y-%m-%d %H')
         self.year, self.month, self.day, self.hour, self.shi_chen = now.year, now.month, now.day, now.hour, \
-                                                                    dizhis.index(dizhis_[math.ceil(now.hour / 2)]) + 1
+            dizhis.index(dizhis_[math.ceil(now.hour / 2)]) + 1
 
         if not time:
             if re.match(r'^\d{4}$', nian):

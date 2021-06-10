@@ -103,6 +103,9 @@ class LiuYaoGua:
         self.liu_qin, self.fu_shen, self.fu_shen_list = self.__set_liu_qin()
         self.liu_shen = ""
 
+    def __set_yao__(self):
+        pass
+
     def __set_shi_ying(self):
         shi = self.gong
         shi_index = self.gong_wei

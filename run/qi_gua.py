@@ -3,14 +3,14 @@ import sys
 import getopt
 from datetime import datetime
 import re
-#import pyperclip
+
 
 def print_help():
     t = """
     举例：
     所测事项时间为2021年12月23日，卦码336，卦主年龄34，性别男，职业IT
-    python qi_gua.py -t 2021-12-23T12 -n 336 -a 34 -r IT 
-    
+    python qi_gua.py -t 2021-12-23T12 -n 336 -a 34 -r IT
+
     参数说明：
     起卦内容参数：
         -t, --time          事项时间，即卦日月所在时间。如果不输入，则取起卦时间。无起卦时间则取当前时间。
@@ -22,12 +22,12 @@ def print_help():
         -l, --category      策项
         -o, --detail        通过卦码起卦时，用这个参数表示求测内容
         -q, --quan          时空加权方式起卦
-        
+
     卦主内容参数：
         -g, --gender    卦主性别，0女1男，F女M男，也可以直接输入男女。
         -a, --age       卦主年龄。
         -r, --role      卦主职业。
-    
+
     详细设置卦所在时间和起卦时间参数：
         -s,-e, --setupTime 起卦时间，不指定则默认为当前时间。
                         格式 %Y-%m-%dT%H （可以用/替代-）, 例如：2021-12-23T12。
@@ -35,7 +35,7 @@ def print_help():
         -m, --month     卦月，数字。默认是起卦时间。如果输入-t则忽略本参数。
         -d, --day       卦日，数字。默认是起卦时间。如果输入-t则忽略本参数。
         -h, --hour      卦小时，数字，24小时制。默认是起卦时间。
-        
+
         -p, --printBar  打印卦码，不需要加参数。
     """
 

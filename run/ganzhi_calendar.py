@@ -13,7 +13,7 @@ def print_help():
         -s, --span      输出的月的数量，默认输出1个月的数量
                         如果指定-y或--year参数，则输出至少12个月的数据
         -b, --by_year   输出全年
-    
+
     举例：
     
     输出一年的数据：
@@ -68,6 +68,7 @@ def show_calendar(argv):
                 month_spans=month_spans,
                 by_year=by_year
             )
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
