@@ -1,7 +1,10 @@
 from enum import Enum
-from liuyao.common.basic import gua_wu_xing_list, gua_liu_qin, gua_list, gua_dizhi_map, gua_yao_list, \
-    get_gua_name_from_code, gua_dizhi_list
-from liuyao.common.dizhi import liu_qin_list, DiZhi
+from liuyao.common.basic import gua_wu_xing_list, gua_liu_qin, gua_list, \
+    gua_dizhi_map, gua_yao_list,  get_gua_name_from_code, gua_dizhi_list, \
+    get_liu_shen_by_ri_gan, get_liu_qin_of_target
+from liuyao.common.dizhi import DiZhi
+from liuyao.common.yao import Yao, DongYao, BianYao, JingYao
+from liuyao.common.prediction.platform import Platform
 
 
 def __check_dong_code__(code):
@@ -82,10 +85,17 @@ def get_gua_from_code(code) -> Gua:
 
 
 class LiuYaoGua:
-    def __init__(self, waigua_code=1, neigua_code=1, print_with_yin_yang=False):
+    def __init__(self,
+                 waigua_code=1,
+                 neigua_code=1,
+                 ri_gan='甲',
+                 dong_code="",
+                 print_with_yin_yang=False):
         self.print_with_yin_yang = print_with_yin_yang
-        self.name, self.gong, self.gong_wei = get_gua_name_from_code(waigua_code * 10 + neigua_code)
-
+        self.dong_code = [int(s) for s in dong_code]
+        self.name, self.gong, self.gong_wei = get_gua_name_from_code(
+            waigua_code * 10 + neigua_code)
+        self.ri_gan = ri_gan
         self.neigua_code = neigua_code % 8
         self.waigua_code = waigua_code % 8
         if self.waigua_code == 0:
@@ -101,10 +111,103 @@ class LiuYaoGua:
         self.shi, self.shi_index, self.ying_index = self.__set_shi_ying()
         self.wu_xing = gua_wu_xing_list[gua_list.find(self.shi)]
         self.liu_qin, self.fu_shen, self.fu_shen_list = self.__set_liu_qin()
-        self.liu_shen = ""
+        self.liu_shen = self.__set_liushen__()
+        if dong_code:
+            self.bian_gua = self.get_bian_gua_from_code(dong_code)
+            self.bian_gua_liuqin = self.__set_biangua_liuqin()
+            self.yao_and_platforms = self.__set_yaos_and_platforms__()
+        else:
+            self.bian_gua = None
 
-    def __set_yao__(self):
-        pass
+    def __set_biangua_liuqin(self):
+        result = []
+        target_dizhi = self.neigua.dizhi['inside'][0]
+        target_dizhi_liuqin = self.liu_qin[0]
+        for effect_dizhi in self.bian_gua.dizhi:
+            liu_qin = get_liu_qin_of_target(
+                target_dizhi.value.name,
+                target_dizhi_liuqin,
+                effect_dizhi.value.name)
+            result.append(liu_qin)
+        print(result)
+        return result
+
+    def __set_liushen__(self):
+        return get_liu_shen_by_ri_gan(self.ri_gan)
+
+    def __set_yaos_and_platforms__(self):
+        yaos = [False, False, False, False, False, False]
+        ben_gua_yaos = [False, False, False, False, False, False]
+        bian_gua_yaos = [False, False, False, False, False, False]
+        platforms = [False, False, False, False, False, False]
+        for i in range(5, -1, -1):
+            if i < 3:
+                gua = self.neigua
+                bian_gua = self.bian_gua.neigua
+            else:
+                gua = self.waigua
+                bian_gua = self.bian_gua.waigua
+            if i+1 in self.dong_code:
+                bengua_yao = self.__set_dongyao__(i, gua)
+                biangua_yao = self.__set_bianyao__(i, bian_gua)
+            else:
+                bengua_yao = self.__set_jingyao__(i, gua)
+                biangua_yao = self.__set_yao__(i, bian_gua)
+            ben_gua_yaos[i] = bengua_yao
+            bian_gua_yaos[i] = biangua_yao
+            yaos[i] = (bengua_yao, biangua_yao)
+            if i+1 in self.dong_code:
+                platform = self.__set_platform__(i, bengua_yao, biangua_yao)
+                platforms[i] = platform
+
+        return {
+            "yaos": {
+                "ben_gua": ben_gua_yaos,
+                "bian_gua": bian_gua_yaos,
+                "list": yaos
+            },
+            "platforms": platforms
+        }
+
+    def __set_dongyao__(self, yao_index, gua):
+        return self.__set_yao__(yao_index, gua, DongYao)
+
+    def __set_jingyao__(self, yao_index, gua):
+        return self.__set_yao__(yao_index, gua,  JingYao)
+
+    def __set_yao__(self, yao_index, gua, yao_class=Yao):
+        i = yao_index
+        if i < 3:
+            dizhi = gua.dizhi['inside'][i]
+        else:
+            dizhi = gua.dizhi['outside'][i-3]
+        if yao_class.__name__ in ['Yao', 'BianYao']:
+            liuqin = self.bian_gua_liuqin[i]
+        else:
+            liuqin = self.liu_qin[i]
+        yao = yao_class(i+1,
+                        dizhi,
+                        liuqin,
+                        self.liu_shen[i],
+                        gua,
+                        self.shi,
+                        self,
+                        True if i+1 == self.shi_index else False,
+                        True if i+1 == self.ying_index else False,
+                        self.fu_shen_list[i]
+                        )
+
+        return yao
+
+    def __set_bianyao__(self, yao_index, gua):
+        return self.__set_yao__(yao_index, gua, BianYao)
+
+    def __set_platform__(self, index, dongyao, bianyao):
+        return Platform(dongyao,
+                        bianyao,
+                        index,
+                        self,
+                        self.bian_gua)
 
     def __set_shi_ying(self):
         shi = self.gong
@@ -121,7 +224,8 @@ class LiuYaoGua:
         return shi, shi_index, ying_index
 
     def __set_liu_qin(self):
-        liu_qin = [i.value.get_liu_qin_to_wu_xing(self.wu_xing) for i in self.dizhi]
+        liu_qin = [i.value.get_liu_qin_to_wu_xing(
+            self.wu_xing) for i in self.dizhi]
         absenced_liu_qin = []
         gong_index = gua_list.find(self.gong)
         fu_gua_liu_qin = gua_liu_qin[gong_index]
@@ -171,10 +275,14 @@ class LiuYaoGua:
         else:
             xiagua_bian = self.neigua.index
         if shanggua_code:
-            shanggua_bian = int(self.waigua.get_bian_gua(int(shanggua_code)).index)
+            shanggua_bian = int(
+                self.waigua.get_bian_gua(int(shanggua_code)).index)
         else:
             shanggua_bian = self.waigua.index
-        return LiuYaoGua(shanggua_bian, xiagua_bian, print_with_yin_yang=self.print_with_yin_yang)
+        return LiuYaoGua(shanggua_bian,
+                         xiagua_bian,
+                         self.ri_gan,
+                         print_with_yin_yang=self.print_with_yin_yang)
 
     def __get_dizhi(self):
         result = []
@@ -215,7 +323,9 @@ class LiuYaoGua:
             [6, 2], [7, 3], [1, 8], [4, 7]
         ]
         for item in liu_he_list:
-            if (self.neigua_code == item[0] and self.waigua_code == item[1]) or (
-                    self.neigua_code == item[1] and self.waigua_code == item[0]):
+            if (self.neigua_code == item[0]
+                    and self.waigua_code == item[1]) \
+                    or (self.neigua_code == item[1]
+                        and self.waigua_code == item[0]):
                 return True
         return False

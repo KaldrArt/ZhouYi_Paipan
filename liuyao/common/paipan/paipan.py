@@ -3,7 +3,7 @@ from liuyao.common.prediction.platform import Platform
 from common.jiazi import JiaZi, JiaZiBase
 from common.calendar import Solar2LunarCalendar
 from common.utils import init_date
-from liuyao.common.basic import get_liu_shen_by_ri_gan
+# from liuyao.common.basic import get_liu_shen_by_ri_gan
 from liuyao.common.paipan_parser.dazongyi_to_md import DaZongYiTransformer
 from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
@@ -49,7 +49,8 @@ def __check_code__(code):
 
 
 class PaiPan:
-    def __init__(self, code, nian=0, yue=0, ri=0, shi=0, info=default_info, print_yin_yang=False, save=True):
+    def __init__(self, code, nian=0, yue=0, ri=0, shi=0,
+                 info=default_info, print_yin_yang=False, save=True):
         self.code = __check_code__(code)
         self.gua_code = self.code[0:2]
         self.info = info
@@ -60,33 +61,39 @@ class PaiPan:
             if not nian:
                 nian = datetime.now().year
             base_time = datetime(int(nian), int(yue), int(ri))
-            self.time = (base_time + timedelta(hours=shi)).strftime("%Y/%m/%dT%H:%M:%S")
+            self.time = (base_time + timedelta(hours=shi)
+                         ).strftime("%Y/%m/%dT%H:%M:%S")
             if shi:
                 if shi == 23:
                     base_time += timedelta(days=1)
-            self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(base_time.strftime("%Y/%m/%d"))
+            self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(
+                base_time.strftime("%Y/%m/%d"))
         # 没有完整的日月，也没有设置起卦时间，设置为当前时间
         elif not self.time:
             self.time = datetime.now().strftime("%Y/%m/%dT%H:%M:%S")
             info['起卦时间'] = datetime.now().strftime("%Y/%m/%dT%H:%M:%S")
-            self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(datetime.now().strftime("%Y/%m/%d"))
+            self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(
+                datetime.now().strftime("%Y/%m/%d"))
         # 没有完整的日月，有起卦时间，用起卦时间来代表事项时间
         else:
             self.date, self.solar_to_lunar_date, _ = init_date(self.time)
-            self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(self.solar_to_lunar_date)
+            self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(
+                self.solar_to_lunar_date)
 
+        self.dong_code = self.code[2:]
         self.ri_zhu: JiaZiBase = JiaZi[self.ri].value
         self.kong_wang = self.ri_zhu.kong_wang
         self.ben_gua = LiuYaoGua(
             int(self.gua_code[0]),
             int(self.gua_code[1]),
+            self.ri[0],
+            self.dong_code,
             print_yin_yang
         )
 
-        self.dong_code = self.code[2:]
         if len(self.dong_code):
             self.jing_gua = False
-            self.bian_gua = self.ben_gua.get_bian_gua_from_code(int(self.dong_code))
+            self.bian_gua = self.ben_gua.bian_gua
         else:
             self.jing_gua = True
 
@@ -97,8 +104,8 @@ class PaiPan:
         self.shi_name = self.ben_gua.shi
         self.fu_shen_text = self.ben_gua.fu_shen_list
         self.print_yin_yang = print_yin_yang
-        self.ben_gua.set_liu_shen(get_liu_shen_by_ri_gan(self.ri[0]))
-        self.ping_tai = self.__set_ping_tai()
+        # self.ben_gua.set_liu_shen(get_liu_shen_by_ri_gan(self.ri[0]))
+        # self.ping_tai = self.__set_ping_tai()
         if save:
             self.print_md()
 
@@ -110,18 +117,22 @@ class PaiPan:
         return result
 
     def print_md(self, neet_print=False):
-        return DaZongYiTransformer(self.__str__(), print=neet_print, save=self.save)
+        return DaZongYiTransformer(
+            self.__str__(),
+            print=neet_print, save=self.save)
 
     def __str__(self):
         bengua_strs = self.ben_gua.__str__().split("\n")
         ben_gua_liuqin = []
         ben_gua_liuqin.extend(self.ben_gua.liu_qin)
         ben_gua_liuqin.reverse()
-        s = "求测人年龄:%s 性别:%s 职业:%s\n" % (self.info['年龄'], self.info['性别'], self.info['职业'])
+        s = "求测人年龄:%s 性别:%s 职业:%s\n" % (
+            self.info['年龄'], self.info['性别'], self.info['职业'])
         for key in self.info:
             if key not in ['年龄', '性别', '职业']:
                 if '时间' in key:
-                    s += key + ":%s" % datetime.strptime(self.info[key], "%Y/%m/%dT%H:%M:%S").strftime(
+                    s += key + ":%s" % datetime.strptime(
+                        self.info[key], "%Y/%m/%dT%H:%M:%S").strftime(
                         "%Y年%m月%d日%H点") + "\n"
                 else:
                     s += key + ":%s" % self.info[key] + "\n"
@@ -129,7 +140,9 @@ class PaiPan:
         s += "\n"
         s += "排盘:\n"
         s += "\n"
-        s += "%s年 %s月 %s日(%s空) %s卦" % (self.nian, self.yue, self.ri, "".join(i.name for i in self.kong_wang), self.code)
+        s += "%s年 %s月 %s日(%s空) %s卦" % (
+            self.nian, self.yue, self.ri,
+            "".join(i.name for i in self.kong_wang), self.code)
         s += "\n"
         s += "    " + "《%s》" % self.ben_gua.name + "\t"
         if not self.jing_gua:
@@ -220,13 +233,15 @@ class PaiPan:
 
 
 class PaiPanFromTime(PaiPan):
-    def __init__(self, time="", nian="", yue="", ri="", shi="", info=default_info, print_yin_yang=False):
+    def __init__(self, time="", nian="", yue="", ri="", shi="",
+                 info=default_info, print_yin_yang=False):
         now = datetime.now()
         dizhis = "子丑寅卯辰巳午未申酉戌亥"
         dizhis_ = dizhis + "子"
         if time:
             now = datetime.strptime(time, '%Y-%m-%d %H')
-        self.year, self.month, self.day, self.hour, self.shi_chen = now.year, now.month, now.day, now.hour, \
+        self.year, self.month, self.day, self.hour, self.shi_chen = \
+            now.year, now.month, now.day, now.hour, \
             dizhis.index(dizhis_[math.ceil(now.hour / 2)]) + 1
 
         if not time:
@@ -240,11 +255,15 @@ class PaiPanFromTime(PaiPan):
                 if shi in dizhis:
                     self.shi_chen = dizhis.index(shi) + 1
                 elif re.match(r'^\d+$', shi):
-                    self.shi_chen = dizhis.index(dizhis_[math.ceil(int(shi) / 2)]) + 1
+                    self.shi_chen = dizhis.index(
+                        dizhis_[math.ceil(int(shi) / 2)]) + 1
                 else:
                     print("输入的小时无效，应该输入24小时制的数字")
         code = self.get_time_code()
-        super(PaiPanFromTime, self).__init__(code, info=info, print_yin_yang=print_yin_yang, nian=self.year,
+        super(PaiPanFromTime, self).__init__(code,
+                                             info=info,
+                                             print_yin_yang=print_yin_yang,
+                                             nian=self.year,
                                              yue=self.month, )
 
     def get_time_code(self):
@@ -263,18 +282,26 @@ class PaiPanFromTime(PaiPan):
 
 
 class PaiPanFromSentence(PaiPan):
-    def __init__(self, chars, nian=0, yue=0, ri=0, shi="", info=default_info, print_yin_yang=False):
+    def __init__(self, chars, nian=0, yue=0, ri=0, shi="",
+                 info=default_info, print_yin_yang=False):
         self.chars = chars
         if isinstance(shi, str):
             if not shi:
-                self.shi = "子丑寅卯辰巳午未申酉戌亥".index("子丑寅卯辰巳午未申酉戌亥子"[math.ceil(datetime.now().hour / 2)]) + 1
+                self.shi = "子丑寅卯辰巳午未申酉戌亥".index(
+                    "子丑寅卯辰巳午未申酉戌亥子"[math.ceil(datetime.now().hour / 2)]) + 1
             else:
                 self.shi = "子丑寅卯辰巳午未申酉戌亥".index(shi) + 1
         elif isinstance(shi, int):
-            self.shi = "子丑寅卯辰巳午未申酉戌亥".index("子丑寅卯辰巳午未申酉戌亥子"[math.ceil(shi / 2)]) + 1
+            self.shi = "子丑寅卯辰巳午未申酉戌亥".index(
+                "子丑寅卯辰巳午未申酉戌亥子"[math.ceil(shi / 2)]) + 1
         self.strokes = self.get_stroke(chars)
         code = self.get_code(self.strokes, self.shi)
-        super(PaiPanFromSentence, self).__init__(code, nian=nian, yue=yue, ri=ri, shi=shi, info=info,
+        super(PaiPanFromSentence, self).__init__(code,
+                                                 nian=nian,
+                                                 yue=yue,
+                                                 ri=ri,
+                                                 shi=shi,
+                                                 info=info,
                                                  print_yin_yang=print_yin_yang)
 
     def get_code(self, strokes, shi):
@@ -330,6 +357,8 @@ class PaiPanFromSentence(PaiPan):
                 count = 0
             i += 1
         t_count += self.shi
-        s += "时辰\t%s\t%s\t\n-----------------------------\n" % ("子丑寅卯辰巳午未申酉戌亥"[self.shi - 1], self.shi)
-        s += "总和\t\t%s\t%s\n=============================\n" % (t_count, t_count % 6 if t_count % 6 else 6)
+        s += "时辰\t%s\t%s\t\n-----------------------------\n" % (
+            "子丑寅卯辰巳午未申酉戌亥"[self.shi - 1], self.shi)
+        s += "总和\t\t%s\t%s\n=============================\n" % (
+            t_count, t_count % 6 if t_count % 6 else 6)
         return s

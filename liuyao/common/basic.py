@@ -1,5 +1,5 @@
 # 卦装地支
-from liuyao.common.dizhi import DiZhi
+from liuyao.common.dizhi import DiZhi, di_zhi_list
 
 gua_list = "乾兑离震巽坎艮坤"
 gua_wu_xing_list = "金金火木木水土土"
@@ -90,3 +90,25 @@ def generate_gua_dizhi_map():
 
 
 generate_gua_dizhi_map()
+
+liu_qin = "兄孙财官父"
+wu_xing = "水木火土金"
+
+
+def get_liu_qin_of_target(
+        target_dizhi: str,
+        target_dizhi_liuqin: str,
+        effect_dizhi: str):
+    if effect_dizhi not in di_zhi_list or \
+            target_dizhi not in di_zhi_list or \
+            target_dizhi_liuqin not in liu_qin:
+        raise Exception('输入参数错误 %s,%s,%s' % (
+            target_dizhi,
+            target_dizhi_liuqin,
+            effect_dizhi))
+    target_dizhi_liuqin_index = liu_qin.index(target_dizhi_liuqin)
+    target_wuxing_index = wu_xing.index(DiZhi[target_dizhi].value.wu_xing.name)
+    effect_wuxing_index = wu_xing.index(DiZhi[effect_dizhi].value.wu_xing.name)
+    effect_liuqin_index = target_dizhi_liuqin_index+(effect_wuxing_index
+                                                     - target_wuxing_index)
+    return liu_qin[effect_liuqin_index % 5]
