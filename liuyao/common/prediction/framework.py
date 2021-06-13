@@ -6,7 +6,10 @@ class Framework:
     """
 
     def __init__(self, paipan):
+        self.ri
+        self.yue
         self.platforms = self.get_platforms()
+
         self.platform_relations()
 
     def get_platforms(self):

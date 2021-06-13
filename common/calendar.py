@@ -1,6 +1,9 @@
-import math, ephem, datetime
+import math
+import ephem
+import datetime
 
-yuefen = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+yuefen = ["正月", "二月", "三月", "四月", "五月", "六月",
+          "七月", "八月", "九月", "十月", "十一月", "十二月"]
 nlrq = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八",
         "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
 tiangan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -34,8 +37,10 @@ def SolarLongitube(JD):
 
 
 def SolarTerms(year, angle):
-    if angle > 270: year -= 1  # 岁首冬至
-    if year == 0: year -= 1  # 公元0改为公元前1
+    if angle > 270:
+        year -= 1  # 岁首冬至
+    if year == 0:
+        year -= 1  # 公元0改为公元前1
     JD = EquinoxSolsticeJD(str(year), angle)  # 初值
     if angle >= 270:
         JD0 = EquinoxSolsticeJD(str(year), (angle - 90) % 360)
@@ -52,7 +57,8 @@ def SolarTerms(year, angle):
 
 
 def EvenTerms(year, angle):  # 十二节
-    if 225 <= angle <= 270: year -= 1  # 岁首冬至改为立冬
+    if 225 <= angle <= 270:
+        year -= 1  # 岁首冬至改为立冬
     JD = SolarTerms(year, angle)
     return JD
 
@@ -67,7 +73,8 @@ def DateCompare(JD1, JD2):  # 输入ut，返回ut+8的比较结果
 
 
 def dzs_search(year):  # 寻找年前冬至月朔日
-    if year == 1: year -= 1  # 公元0改为公元前1
+    if year == 1:
+        year -= 1  # 公元0改为公元前1
     dz = ephem.next_solstice((year - 1, 12))  # 年前冬至
     jd = ephem.julian_date(dz)
     # 可能的三种朔日
@@ -86,6 +93,9 @@ def dzs_search(year):  # 寻找年前冬至月朔日
 
 
 def Solar2LunarCalendar(date):  # 默认输入ut+8时间
+    """
+    当前方法，将每天换成了00:00进行的计算，并没有考虑12节当天换月的影响
+    """
     JD = ephem.julian_date(date) - 8 / 24  # ut
     year = ephem.Date(JD + 8 / 24 - 2415020).triple()[0]
     d: ephem.Date = ephem.Date(JD + 8 / 24 - 2415020)
@@ -125,7 +135,8 @@ def Solar2LunarCalendar(date):  # 默认输入ut+8时间
         shuo.append(ephem.next_new_moon(shuo[j]))  # 次月朔
         shuoJD.append(ephem.julian_date(shuo[j + 1]))
         # 查找本月中气，若无则置闰
-        if j == 0: continue  # 冬至月一定含中气，从次月开始查找
+        if j == 0:
+            continue  # 冬至月一定含中气，从次月开始查找
         angle = (-90 + 30 * i) % 360  # 本月应含中气，起冬至
         qJD = SolarTerms(nian, angle)
         # 不判断气在上月而后气在后月的情况，该月起的合朔次数不超过气数，可省去
@@ -141,9 +152,12 @@ def Solar2LunarCalendar(date):  # 默认输入ut+8时间
     if szy >= zry % 12 and zry != 99:
         szy -= 1  # 置闰后的月序名
     # 以正月开始的年干支
-    if szy < 3: nian -= 1  # 正月前属上年
-    if nian < 0: nian += 1
-    rq = math.floor(JD + 8 / 24 + 0.5) - math.floor(newmoon + 8 / 24 + 0.5)  # 日干支
+    if szy < 3:
+        nian -= 1  # 正月前属上年
+    if nian < 0:
+        nian += 1
+    rq = math.floor(JD + 8 / 24 + 0.5) - \
+        math.floor(newmoon + 8 / 24 + 0.5)  # 日干支
     # 判断节气月，起年首前大雪
     lidong = EvenTerms(year, 225)  # 岁首前立冬
     k = int((JD - lidong) // 30)  # 平气法
@@ -155,7 +169,8 @@ def Solar2LunarCalendar(date):  # 默认输入ut+8时间
         jqx = k - 2
     else:
         jqx = k - 1  # jJD2 ≤ JD < jJD1
-    if year < 0: year += 1
+    if year < 0:
+        year += 1
     jqy = gz[(year * 12 + 12 + jqx) % 60]
     nian_jia_zi = gz[(nian - 4) % 60]
     yue_jia_zi = jqy
@@ -168,7 +183,8 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
     date1 = date.split('闰')[-1]
     yx = yuefen.index(date1.split('月')[0] + '月')
     year = nian
-    if yx + 1 > 10: year += 1  # 计算用年，起冬至朔
+    if yx + 1 > 10:
+        year += 1  # 计算用年，起冬至朔
     yx = (yx + 2) % 12
     if '闰' in date:
         yx += 1
@@ -197,10 +213,13 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
             qJD = SolarTerms(year, angle)  # 该月应含中气
         if DateCompare(qJD, shuoJD[j + 1]) and flag == False:  # 中气在次月，则该月为闰月
             i -= 1
-            if leap == False: yx += 1  # 该月前有闰
+            if leap == False:
+                yx += 1  # 该月前有闰
             flag = True  # 仅第一个无中气月置闰
-        if yx == j: k = yx  # 所在月
-    if j == 12 and flag == True: k -= 1
+        if yx == j:
+            k = yx  # 所在月
+    if j == 12 and flag == True:
+        k -= 1
     try:
         rq = nlrq.index(date.split('月')[1])
     except:
@@ -218,16 +237,17 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
 tropicl_year = 365.24219647  # 回归年长度
 
 # 24节气，偶数为气，奇数为节
-jieqi = ["春分", "清明", "谷雨", "立夏", "小满", "芒种", \
-         "夏至", "小暑", "大暑", "立秋", "处暑", "白露", \
-         "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", \
+jieqi = ["春分", "清明", "谷雨", "立夏", "小满", "芒种",
+         "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
+         "秋分", "寒露", "霜降", "立冬", "小雪", "大雪",
          "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰"]
 
 
 # 计算黄经
 def ecliptic_lon(jd_utc):
     s = ephem.Sun(jd_utc)  # 构造太阳
-    equ = ephem.Equatorial(s.ra, s.dec, epoch=jd_utc)  # 求太阳的视赤经视赤纬（epoch设为所求时间就是视赤经视赤纬）
+    # 求太阳的视赤经视赤纬（epoch设为所求时间就是视赤经视赤纬）
+    equ = ephem.Equatorial(s.ra, s.dec, epoch=jd_utc)
     e = ephem.Ecliptic(equ)  # 赤经赤纬转到黄经黄纬
     return e.lon  # 返回黄纬
 
@@ -235,7 +255,8 @@ def ecliptic_lon(jd_utc):
 def iteration(n, jd_utc):  # 迭代求时间
     while True:
         e = ecliptic_lon(jd_utc)
-        dd = (n * 15 - e * 180.0 / math.pi) / 360 * tropicl_year  # 24节气对应的太阳黄经和当前时间求得的太阳黄经差值转为天数
+        dd = (n * 15 - e * 180.0 / math.pi) / 360 * \
+            tropicl_year  # 24节气对应的太阳黄经和当前时间求得的太阳黄经差值转为天数
         if dd > 360:  # 春分时太阳黄经为0，dd有可能差值过大
             dd -= tropicl_year
         jd_utc += dd
@@ -309,7 +330,8 @@ def jie_after(date: datetime.datetime):
 
 
 def get_jie_of_year(year: int, only_jie=True):
-    date_str = datetime.datetime(year - 1, 11, 1, 0, 0, 0).strftime("%Y/%m/%d %H:%M:%S")
+    date_str = datetime.datetime(
+        year - 1, 11, 1, 0, 0, 0).strftime("%Y/%m/%d %H:%M:%S")
     jqs = jq(date_str, 28)
     results = []
     for e in jqs:

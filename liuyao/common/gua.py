@@ -129,7 +129,7 @@ class LiuYaoGua:
                 target_dizhi_liuqin,
                 effect_dizhi.value.name)
             result.append(liu_qin)
-        print(result)
+        # print(result)
         return result
 
     def __set_liushen__(self):

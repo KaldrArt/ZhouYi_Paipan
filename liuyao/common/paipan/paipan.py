@@ -9,6 +9,7 @@ from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
 import math
 import re
+from common.calendar import Solar2LunarCalendar
 
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
@@ -295,7 +296,7 @@ class PaiPanFromSentence(PaiPan):
             self.shi = "子丑寅卯辰巳午未申酉戌亥".index(
                 "子丑寅卯辰巳午未申酉戌亥子"[math.ceil(shi / 2)]) + 1
         self.strokes = self.get_stroke(chars)
-        code = self.get_code(self.strokes, self.shi)
+        code = self.get_code(self.strokes, self.shi, nian, yue, ri)
         super(PaiPanFromSentence, self).__init__(code,
                                                  nian=nian,
                                                  yue=yue,
@@ -304,7 +305,7 @@ class PaiPanFromSentence(PaiPan):
                                                  info=info,
                                                  print_yin_yang=print_yin_yang)
 
-    def get_code(self, strokes, shi):
+    def get_code(self, strokes, shi, nian=0, yue=0, ri=0):
         char_count = len(strokes)
         shang_gua = sum(strokes[0:char_count // 2]) % 8
         if shang_gua == 0:
@@ -362,3 +363,11 @@ class PaiPanFromSentence(PaiPan):
         s += "总和\t\t%s\t%s\n=============================\n" % (
             t_count, t_count % 6 if t_count % 6 else 6)
         return s
+
+
+class PaiPanFromTextAndTime(PaiPanFromSentence):
+    def get_code(self, strokes, shi, nian, yue, ri):
+        stroke_count = sum(strokes)
+
+
+print(Solar2LunarCalendar('2021/06/15'))
