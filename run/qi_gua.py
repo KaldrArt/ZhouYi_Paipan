@@ -1,4 +1,5 @@
-from liuyao.common.paipan.paipan import PaiPanFromSentence, PaiPanFromTime, PaiPan, normalize_num_code
+from liuyao.common.paipan.paipan import PaiPanFromSentence, \
+    PaiPanFromTime, PaiPan, normalize_num_code, PaiPanFromTextAndTime
 import sys
 import getopt
 from datetime import datetime
@@ -59,16 +60,22 @@ def qi_gua(argv):
     setup_time = now
     content = ""
     number = ""
+    by_quan = False
     info = {
-        "年龄": "34", "性别": "男", "职业": "IT", "起卦时间": setup_time.strftime('%Y/%m/%dT%H:%M:%S')
+        "年龄": "34",
+        "性别": "男",
+        "职业": "IT",
+        "起卦时间": setup_time.strftime('%Y/%m/%dT%H:%M:%S')
     }
     only_help = False
     print_bar = False
     try:
-        opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e:l:j:k:o:",
-                                   ["year=", "content=", "hour=", "month=", "day=", "number=", "time=", "printBar",
-                                    "gender=", "age=", "role=", "setupTime=", "help", "category=", "condition=",
-                                    "time_limit=", "detail="])
+        opts, args = getopt.getopt(argv, "m:d:c:h:n:y:t:pg:a:r:s:e:l:j:k:o:q",
+                                   ["year=", "content=", "hour=", "month=",
+                                    "day=", "number=", "time=", "printBar",
+                                    "gender=", "age=", "role=", "setupTime=",
+                                    "help", "category=", "condition=",
+                                    "time_limit=", "detail=", 'quan'])
         if len(opts):
             for cmd, arg in opts:
                 if cmd in ['--help']:
@@ -77,7 +84,9 @@ def qi_gua(argv):
                 elif cmd in ['-r', '--role']:
                     info['职业'] = arg
                 elif cmd in ['-l', '--category']:
-                    if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
+                    if "项目" in arg or \
+                            "财运" in arg or "合作" in arg or \
+                            "前景" in arg or "商业" in arg:
                         arg = "项目前景"
                     info['预测策项'] = arg
                 elif cmd in ['-j', '--condition']:
@@ -98,12 +107,15 @@ def qi_gua(argv):
                         info['年龄'] = arg
                 elif cmd in ['-t', '--time']:
                     time = change_time_format(arg)
-                    if time.year == year and time.month == month and time.day == day and time.hour == hour:
+                    if time.year == year and \
+                            time.month == month and \
+                            time.day == day and time.hour == hour:
                         # 如果时间就是当前时间，那么置为False，也就是通过year等字段取值
                         time = False
                     else:
                         info['事项时间'] = time.strftime("%Y/%m/%dT%H:%M:%S")
-                        year, month, day, hour = time.year, time.month, time.day, time.hour
+                        year, month, day, hour = time.year, \
+                            time.month, time.day, time.hour
                 elif cmd in ['-s', '-e', "--setupTime"]:
                     if arg:
                         setup_time_set = True
@@ -126,17 +138,25 @@ def qi_gua(argv):
                     if re.match(r'^\d+$', arg):
                         number = int(arg)
                     info['起卦方式'] = '卦码起卦'
+                elif cmd in ['-q', '--quan']:
+                    by_quan = True
+                    info['起卦方式'] = '时空加权起卦'
             if '预测策项' not in info:
                 info['预测策项'] = ""
                 arg = info['求测内容']
-                if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
+                if "项目" in arg or "财运" in arg or \
+                        "合作" in arg or "前景" in arg or \
+                        "商业" in arg:
                     info['预测策项'] = "项目前景"
-                elif "何日" in arg or "什么时间" in arg or "什么时候" in arg or '哪天' in arg or "几号" in arg or "几月" in arg:
+                elif "何日" in arg or "什么时间" in arg or \
+                    "什么时候" in arg or '哪天' in arg or \
+                        "几号" in arg or "几月" in arg:
                     pass
                 if not info['预测策项']:
                     info['预测策项'] = "杂占"
             if not time and setup_time_set:
-                year, month, day, hour = setup_time.year, setup_time.month, setup_time.day, setup_time.hour
+                year, month, day, hour = setup_time.year, setup_time.month, \
+                    setup_time.day, setup_time.hour
                 # print(year, month, day, hour)
         else:
             param = args[0]
@@ -148,7 +168,8 @@ def qi_gua(argv):
                 info['求测内容'] = content
                 arg = info['求测内容']
                 info['预测策项'] = "杂占"
-                if "项目" in arg or "财运" in arg or "合作" in arg or "前景" in arg or "商业" in arg:
+                if "项目" in arg or "财运" in arg or \
+                        "合作" in arg or "前景" in arg or "商业" in arg:
                     info['预测策项'] = "项目前景"
                 info['起卦方式'] = '文字笔画起卦'
 
@@ -158,12 +179,21 @@ def qi_gua(argv):
         if only_help:
             print_help()
         else:
-            if content:
-                gua = PaiPanFromSentence(chars=content, nian=year, yue=month, ri=day, shi=hour, info=info,
+            if by_quan:
+                gua = PaiPanFromTextAndTime(chars=content, nian=year,
+                                            yue=month, ri=day, shi=hour,
+                                            info=info, print_yin_yang=print_bar)
+                print(gua)
+            elif content:
+                gua = PaiPanFromSentence(chars=content,
+                                         nian=year, yue=month, ri=day,
+                                         shi=hour, info=info,
                                          print_yin_yang=print_bar)
                 print(gua)
             elif number:
-                gua = PaiPan(normalize_num_code(number), nian=year, yue=month, ri=day, shi=hour, info=info,
+                gua = PaiPan(normalize_num_code(number),
+                             nian=year, yue=month, ri=day, shi=hour,
+                             info=info,
                              print_yin_yang=print_bar)
                 print(gua)
             else:
@@ -175,7 +205,11 @@ def qi_gua(argv):
                     print(gua)
                 # 如果分开设置了卦的时间
                 elif year and month and day and hour:
-                    gua = PaiPanFromTime(nian=str(year), yue=str(month), ri=str(day), shi=str(hour), info=info,
+                    gua = PaiPanFromTime(nian=str(year),
+                                         yue=str(month),
+                                         ri=str(day),
+                                         shi=str(hour),
+                                         info=info,
                                          print_yin_yang=print_bar)
                     print(gua)
                 # 如果时间无效

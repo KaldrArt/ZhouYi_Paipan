@@ -4,8 +4,11 @@ import datetime
 
 yuefen = ["正月", "二月", "三月", "四月", "五月", "六月",
           "七月", "八月", "九月", "十月", "十一月", "十二月"]
-nlrq = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八",
-        "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+nlrq = ["初一", "初二", "初三", "初四", "初五", "初六", "初七",
+        "初八", "初九", "初十", "十一", "十二", "十三", "十四",
+        "十五", "十六", "十七", "十八", "十九", "二十", "廿一",
+        "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八",
+        "廿九", "三十", '三十一']
 tiangan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
 dizhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
 gz = [''] * 60  # 六十甲子表
@@ -63,6 +66,11 @@ def EvenTerms(year, angle):  # 十二节
     return JD
 
 
+# print(ephem.julian_date('2021/02/03 20:00:00')-8/24)
+# print(EvenTerms(2021, 315))
+# print(ephem.Date(EvenTerms(2021, 315)-2415020))
+
+
 def DateCompare(JD1, JD2):  # 输入ut，返回ut+8的比较结果
     JD1 += 0.5 + 8 / 24
     JD2 += 0.5 + 8 / 24
@@ -92,16 +100,26 @@ def dzs_search(year):  # 寻找年前冬至月朔日
         return date3
 
 
-def Solar2LunarCalendar(date):  # 默认输入ut+8时间
+def Solar2LunarCalendar(date_str, gan_zhi_type="hybrid"):  # 默认输入ut+8时间
     """
     当前方法，将每天换成了00:00进行的计算，并没有考虑12节当天换月的影响
     """
-    JD = ephem.julian_date(date) - 8 / 24  # ut
-    year = ephem.Date(JD + 8 / 24 - 2415020).triple()[0]
-    d: ephem.Date = ephem.Date(JD + 8 / 24 - 2415020)
-    d.tuple()
+
+    if isinstance(date_str, datetime.datetime):
+        date_str = date_str.strftime("%Y/%m/%d %H:%M:%s")
+    if ":" not in date_str:
+        date_str += " 00:00:00"
+    else:
+        date_str = date_str[0:19]
+    JD = ephem.julian_date(date_str) - 8 / 24  # ut
+    year = ephem.Date(JD + 8/24 - 2415020).triple()[0]
+    year_month_day, hour_minute_second = date_str.split(" ")
+    year_normal, month, day = [int(i) for i in year_month_day.split("/")]
+    hour, minute, second = [int(i) for i in hour_minute_second.split(":")]
+    # date_tuple = ephem.Date(JD + 8 / 24 - 2415020).tuple()
     shuo = []  # 存储date
     shuoJD = []  # 存储JD
+    # print(year)
     # 判断所在年
     shuo.append(dzs_search(year))  # 本年冬至朔
     next_dzs = dzs_search(year + 1)  # 次年冬至朔
@@ -120,7 +138,7 @@ def Solar2LunarCalendar(date):  # 默认输入ut+8时间
     shuoJD.append(ephem.julian_date(shuo[0]))  # 找到的年前冬至朔
     # 查找所在月及判断置闰
     run = ''
-    szy = 0
+    szy = 0  # 闰月所在月
     i = -1  # 中气序，从0起计
     j = -1  # 计算连续两个冬至月中的合朔次数，从0起计
     zry = 99  # 无效值
@@ -140,7 +158,7 @@ def Solar2LunarCalendar(date):  # 默认输入ut+8时间
         angle = (-90 + 30 * i) % 360  # 本月应含中气，起冬至
         qJD = SolarTerms(nian, angle)
         # 不判断气在上月而后气在后月的情况，该月起的合朔次数不超过气数，可省去
-        if DateCompare(qJD, shuoJD[j + 1]) and flag == False:  # 中气在次月，则本月无中气
+        if DateCompare(qJD, shuoJD[j + 1]) and not flag:  # 中气在次月，则本月无中气
             zry = j + 1  # 置闰月
             i -= 1
             flag = True  # 仅第一个无中气月置闰
@@ -151,32 +169,95 @@ def Solar2LunarCalendar(date):  # 默认输入ut+8时间
         run = '闰'
     if szy >= zry % 12 and zry != 99:
         szy -= 1  # 置闰后的月序名
-    # 以正月开始的年干支
-    if szy < 3:
-        nian -= 1  # 正月前属上年
-    if nian < 0:
-        nian += 1
     rq = math.floor(JD + 8 / 24 + 0.5) - \
         math.floor(newmoon + 8 / 24 + 0.5)  # 日干支
-    # 判断节气月，起年首前大雪
-    lidong = EvenTerms(year, 225)  # 岁首前立冬
-    k = int((JD - lidong) // 30)  # 平气法
-    jJD1 = EvenTerms(year + (k + 1) // 12, (225 + (k + 1) * 30) % 360)
-    jJD2 = EvenTerms(year + k // 12, (225 + k * 30) % 360)
-    if DateCompare(JD, jJD1):
-        jqx = k
-    elif not DateCompare(JD, jJD2):
-        jqx = k - 2
+
+    if gan_zhi_type == "hybrid":
+        # 以正月开始的年干支
+        if szy < 3:
+            nian -= 1  # 正月前属上年
+            # 判断节气月，起年首前大雪
+        # 找到立冬，看当前年的立冬实在什么时候
     else:
-        jqx = k - 1  # jJD2 ≤ JD < jJD1
+        lichun = EvenTerms(year, 315)
+        if JD < lichun:
+            nian -= 1
+    if nian < 0:
+        nian += 1
+    lidong = EvenTerms(year, 225)  # 岁首前立冬
+    # 看当前时间和立冬之间，隔了几个节
+    k = int((JD - lidong) // 30)  # 平气法
+    # 下一个节
+    jJD1 = EvenTerms(year + (k + 1) // 12, (225 + (k + 1) * 30) % 360)
+    # 当前所在的节
+    jJD2 = EvenTerms(year + k // 12, (225 + k * 30) % 360)
+    if gan_zhi_type == 'hybrid':
+        if DateCompare(JD, jJD1):
+            jqx = k
+        elif not DateCompare(JD, jJD2):
+            jqx = k - 2
+        else:
+            jqx = k - 1  # jJD2 ≤ JD < jJD1
+    else:
+        # 当前的日期，比下一个节气
+        if JD >= jJD1:
+            jqx = k
+        elif JD < jJD2:
+            jqx = k-2
+        else:
+            jqx = k-1
+
     if year < 0:
         year += 1
     jqy = gz[(year * 12 + 12 + jqx) % 60]
+    #  if not gan_zhi_type == 'hybrid':
+    #      if JD < lichun and jqy[1] == "寅":
+    #          yjz_index = (year*12+12+jqx-1) % 60
+    #          jqy = gz[yjz_index]
     nian_jia_zi = gz[(nian - 4) % 60]
     yue_jia_zi = jqy
-    ri_jia_zi = gz[math.floor(JD + 8 / 24 + 0.5 + 49) % 60]
+    # ri_jia_zi = gz[math.floor(JD + 8 / 24 + 0.5 + 49) % 60]
+    # else:
+    #   lidong = EvenTerms(year, 225)
+    #  k = int((JD-lidong)//30)
+    #    print(k)
+    #    nian_jia_zi = gz[(nian-4) % 60]
+    #    yue_jia_zi = ""
+    fix = 0
+    if hour == 23 and not gan_zhi_type == 'hybrid':
+        fix = 1
+    ri_jia_zi = gz[math.floor(JD+8/24+0.5+49+fix) % 60]
+    # print(rq, (szy-3) % 12)
     nongli_ri = run + yuefen[(szy - 3) % 12] + nlrq[rq]
     return nian_jia_zi, yue_jia_zi, ri_jia_zi, nongli_ri
+
+
+#  print('2021/03/05 00:00:00',
+#        Solar2LunarCalendar('2021/03/05', 'huangdao'))
+#  print('2021/03/05 16:50:00',
+#        Solar2LunarCalendar('2021/03/05 16:50:00', 'huangdao'))
+#  print('2021/03/05 22:59:59',
+#        Solar2LunarCalendar('2021/03/05 22:59:59', 'huangdao'))
+#  print('2021/03/05 23:59:00',
+#        Solar2LunarCalendar('2021/03/05 23:59:00', 'huangdao'))
+#  print('2021/03/06 01:59:00',
+#        Solar2LunarCalendar('2021/03/06 01:59:00', 'huangdao'))
+#  print()
+#  print('2021/02/03 00:00:00',
+#        Solar2LunarCalendar('2021/02/03', 'huangdao'))
+#  print('2021/02/03 22:00:00',
+#        Solar2LunarCalendar('2021/02/03 22:00:00', 'huangdao'))
+#  print('2021/02/03 22:59:59',
+#        Solar2LunarCalendar('2021/02/03 22:59:59', 'huangdao'))
+#  print('2021/02/03 23:59:00',
+#        Solar2LunarCalendar('2021/02/03 23:59:00', 'huangdao'))
+#  print('2021/02/04 01:59:00',
+#        Solar2LunarCalendar('2021/02/04 01:59:00', 'huangdao'))
+#  print()
+#  print(Solar2LunarCalendar('2021/06/14', 'huangdao'))
+#  print(Solar2LunarCalendar('2021/06/14 22:00:00', 'huangdao'))
+#  print(Solar2LunarCalendar('2021/06/14 23:00:00', 'huangdao'))
+#  # print(gz[(2021-4) % 60])
 
 
 def Lunar2SolarCalendar(nian, date):  # 正月开始的年
@@ -211,18 +292,18 @@ def Lunar2SolarCalendar(nian, date):  # 正月开始的年
         else:
             angle = (-90 + 30 * i) % 360
             qJD = SolarTerms(year, angle)  # 该月应含中气
-        if DateCompare(qJD, shuoJD[j + 1]) and flag == False:  # 中气在次月，则该月为闰月
+        if DateCompare(qJD, shuoJD[j + 1]) and not flag:  # 中气在次月，则该月为闰月
             i -= 1
-            if leap == False:
+            if not leap:
                 yx += 1  # 该月前有闰
             flag = True  # 仅第一个无中气月置闰
         if yx == j:
             k = yx  # 所在月
-    if j == 12 and flag == True:
+    if j == 12 and flag:
         k -= 1
     try:
         rq = nlrq.index(date.split('月')[1])
-    except:
+    except Exception:
         rgz = gz.index(date.split('月')[1])
         sgz = math.floor(shuoJD[k] + 8 / 24 + 0.5 + 49) % 60
         rq = (rgz - sgz) % 60
@@ -264,7 +345,7 @@ def iteration(n, jd_utc):  # 迭代求时间
             break
     d = ephem.Date(jd_utc + 1 / 3)
     d = d.tuple()
-    if n == 24:  # 春分时n=24
+    if n == 24:  # 春分时n = 24
         n -= 24
     r_str = "{0}-{1:02d}-{2:02d} {3}：{4:02d}:{5:02d}:{6:03.1f}" \
         .format(d[0], d[1], d[2], jieqi[n], d[3], d[4], d[5])
@@ -302,7 +383,8 @@ def get_jie_or_qi(elements, jie=True, first=True):
     for r_jie_qi in elements:
         jie_qi_index = jieqi.index(r_jie_qi[0])
         # print(r_jie_qi[0])
-        if (jie and jie_qi_index % 2 == 1) or ((not jie) and jie_qi_index % 2 == 0):
+        if (jie and jie_qi_index % 2 == 1) or \
+                ((not jie) and jie_qi_index % 2 == 0):
             result = r_jie_qi
             if first:
                 break
@@ -370,6 +452,6 @@ class Calendar:
 
     pass
 
-# results = jq(num=24)
+# results = jq(num = 24)
 # for r in results:
 #     print(r)

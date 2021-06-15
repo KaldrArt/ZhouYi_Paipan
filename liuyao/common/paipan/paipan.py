@@ -9,7 +9,6 @@ from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
 import math
 import re
-from common.calendar import Solar2LunarCalendar
 
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
@@ -68,7 +67,7 @@ class PaiPan:
                 if shi == 23:
                     base_time += timedelta(days=1)
             self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(
-                base_time.strftime("%Y/%m/%d"))
+                base_time.strftime("%Y/%m/%d %H:%M:%s"))
         # 没有完整的日月，也没有设置起卦时间，设置为当前时间
         elif not self.time:
             self.time = datetime.now().strftime("%Y/%m/%dT%H:%M:%S")
@@ -368,6 +367,21 @@ class PaiPanFromSentence(PaiPan):
 class PaiPanFromTextAndTime(PaiPanFromSentence):
     def get_code(self, strokes, shi, nian, yue, ri):
         stroke_count = sum(strokes)
+        nian_zhi_index = (nian-1984+1) % 12
+        if nian_zhi_index == 0:
+            nian_zhi_index = 12
 
+        shang_gua_count = nian_zhi_index+yue+ri+stroke_count
+        xia_gua_count = shang_gua_count+shi
+        shang_gua = shang_gua_count % 8
+        xia_gua = xia_gua_count % 8
+        dong_yao = xia_gua % 6
+        if dong_yao == 0:
+            dong_yao = 6
+        if shang_gua == 0:
+            shang_gua = 8
+        if xia_gua == 0:
+            xia_gua = 8
+        return shang_gua*100+xia_gua*10+dong_yao
 
-print(Solar2LunarCalendar('2021/06/15'))
+# print(Solar2LunarCalendar('2021/06/15'))

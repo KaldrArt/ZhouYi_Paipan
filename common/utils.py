@@ -1,6 +1,21 @@
 from datetime import datetime, timedelta
 import os
 from common.calendar import get_jie_of_year, Solar2LunarCalendar
+tiangan = '甲乙丙丁戊己庚辛壬癸'
+dizhi = '子丑寅卯辰巳午未申酉戌亥'
+
+
+def get_next_jiazi(current_jiazi):
+    return tiangan[(tiangan.index(current_jiazi[0])+1) % 10] +\
+        dizhi[(dizhi.index(current_jiazi[1])+1) % 12]
+
+
+def get_previous_jiazi(current_jiazi):
+    return tiangan[(tiangan.index(current_jiazi[0])-1) % 10] +\
+        dizhi[(dizhi.index(current_jiazi[1])-1) % 12]
+
+
+# print(get_next_jiazi('癸亥'))
 
 
 def mkdir(folder):
@@ -76,49 +91,50 @@ def get_gan_zhi_of_date(date):
         )
     date_str = date_to_parse.strftime("%Y/%m/%d")
     ganzhi_of_date = list(Solar2LunarCalendar(date_str))
-    ganzhi_of_previous_date = None
-    print(date_to_parse)
+    # ganzhi_of_previous_date = None
+    print('需要解析的时间', date_to_parse)
     print('当天00:00的干支', ganzhi_of_date)
     jies = jie_around_date(date_to_parse)
     if jies['should_use_previous_date']:
         print("需要用到前一天的干支")
-        date_to_parse_previous_day = date_to_parse-timedelta(days=1)
-        date_str = date_to_parse_previous_day.strftime("%Y/%m/%d")
-        ganzhi_of_previous_date = list(Solar2LunarCalendar(date_str))
-        # TODO: 可以优化，不需要递归运算
-        ganzhi_of_date[0] = ganzhi_of_previous_date[0]
-        ganzhi_of_date[1] = ganzhi_of_previous_date[1]
-        print('前一天00:00的干支', ganzhi_of_previous_date)
+        # date_to_parse_previous_day = date_to_parse-timedelta(days=1)
+        #date_str = date_to_parse_previous_day.strftime("%Y/%m/%d")
+        # ganzhi_of_previous_date = list(Solar2LunarCalendar(date_str))
+        # 优化，不需要通过ephem递归运算
+        # ganzhi_of_date[0] = ganzhi_of_previous_date[0]
+        # ganzhi_of_date[1] = ganzhi_of_previous_date[1]
+        if jies['jie_after']['jie'][0] == '立春':
+            # 修正正月初一才换年的问题
+            # 因为原来的判断程序里，是根据正月初一换年的。
+            # 如果当前不是正月、二月、三月、四月，那么立春的时候，是没有换年的，月要换成上一个月。
+            # 如果当前是正月等，那么年已经提前换掉了，要换成之前的年。
+            if jies['jie_after']['jie'][3].starts_with('正') or \
+                    jies['jie_after']['jie'][3].starts_with('二') or \
+                    jies['jie_after']['jie'][3].starts_with('三') or \
+                    jies['jie_after']['jie'][3].starts_with('五') or \
+                    jies['jie_after']['jie'][3].starts_with('四'):
+                # 如果立春的时候，是正月初一，那么不变
+                if jies['jie_after']['jie'][3] == '正月初一':
+                    pass
+                 # 如果立春的时候，已经是正月初一以后的时间，那么年干一定要向前减一年
+                else:
+                    ganzhi_of_date[0] = get_previous_jiazi(ganzhi_of_date[0])
+                    pass
+                pass
+            elif jies['jie_after']['jie'][3].starts_with('九') or \
+                    jies['jie_after']['jie'][3].starts_with('十') or \
+                    jies['jie_after']['jie'][3].starts_with('八'):
+                pass
+
+            ganzhi_of_date[1] = get_previous_jiazi(ganzhi_of_date[1])
+        # print('前一天00:00的干支', ganzhi_of_previous_date)
     if jies['should_use_next_day']:
-        date_to_parse_next_day = date_to_parse+timedelta(days=1)
-        date_str = date_to_parse_next_day.strftime("%Y/%m/%d")
-        ganzhi_of_next_date = list(Solar2LunarCalendar(date_str))
+        #date_to_parse_next_day = date_to_parse+timedelta(days=1)
+        #date_str = date_to_parse_next_day.strftime("%Y/%m/%d")
+        #ganzhi_of_next_date = list(Solar2LunarCalendar(date_str))
         # TODO: 可以优化，不需要递归来运算
-        ganzhi_of_date[2] = ganzhi_of_next_date[2]
+        ganzhi_of_date[2] = get_next_jiazi(ganzhi_of_date[2])
     return ganzhi_of_date[0], ganzhi_of_date[1], ganzhi_of_date[2], ganzhi_of_date[3]
-
-
-jies = get_jie_of_year(2020)
-for jie in jies:
-    print("====================================")
-    print(jie)
-    time_before = jie[1]-timedelta(days=1)
-    print("-------节气之前1天-------")
-    print('原结果', time_before, Solar2LunarCalendar(
-        time_before.strftime("%Y/%m/%d %H:%M")))
-    print('转换', get_gan_zhi_of_date(time_before))
-    print("\n-------节气之前1分钟-------")
-    t = (jie[1]-timedelta(seconds=1*60)).strftime("%Y/%m/%d %H:%M")
-    print("原结果", t, Solar2LunarCalendar(t))
-    print('转换', get_gan_zhi_of_date(t))
-    print("\n-------节气之后1分钟-------")
-    t = (jie[1]+timedelta(minutes=1)).strftime("%Y/%m/%d %H:%M")
-    print("原结果", t, Solar2LunarCalendar(t))
-    print('转换', get_gan_zhi_of_date(t))
-    time_after = jie[1]+timedelta(days=1)
-    print("\n-------节气之后1天-------")
-    print('节气之后1天的转换结果', time_after, get_gan_zhi_of_date(
-        time_after.strftime("%Y/%m/%d %H:%M")))
 
 
 def init_date(date: str):
