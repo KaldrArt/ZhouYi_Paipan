@@ -2,7 +2,12 @@ from ..paipan.paipan import PaiPan
 
 
 class Prediction(PaiPan):
-    def __init__(self, code, yue="", ri="", info={}, print_yin_yang=False):
+    def __init__(self,
+                 code,
+                 yue="",
+                 ri="",
+                 info={},
+                 print_yin_yang=False):
         super().__init__(code, yue, ri, info, print_yin_yang)
         self.liu_yao_parse()
 
@@ -22,5 +27,3 @@ class Prediction(PaiPan):
         搞清楚架构，就知道了各个位置的能量释放，因此就能够知道各个爻位的状态。
         """
         pass
-
-    

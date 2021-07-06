@@ -9,7 +9,7 @@ from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
 import math
 import re
-
+from common.prediction.dao import Dao
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
 
@@ -48,7 +48,7 @@ def __check_code__(code):
     return code_str[0:2] + "".join(result)
 
 
-class PaiPan:
+class PaiPan(Dao):
     def __init__(self, code, nian=0, yue=0, ri=0, shi=0,
                  info=default_info, print_yin_yang=False, save=True):
         self.code = __check_code__(code)

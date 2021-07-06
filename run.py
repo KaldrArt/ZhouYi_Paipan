@@ -1,6 +1,5 @@
 from analyzer.basic_analyzer import BasicAnalyzer
 
-#
 # BasicAnalyzer('1980/1/14 3:35', gender=False)  # 克夫女
 # BasicAnalyzer('1972/7/3 13:15', False)  # 克夫尼姑女
 # BasicAnalyzer("1987/10/13 9:35", True)
@@ -16,4 +15,7 @@ from analyzer.basic_analyzer import BasicAnalyzer
 # BasicAnalyzer("1988/1/7 17:00", False)
 # BasicAnalyzer("1955/10/30 21:00", True)
 # BasicAnalyzer("1952/1/1 17:00",False)
-BasicAnalyzer("1996/4/1 04:55", False)
+# BasicAnalyzer("1996/4/1 04:55", False) # 邵心怡
+# BasicAnalyzer('1973/5/9 19:00:00', True) # 癸丑运，癸巳年父亲去世，壬辰年儿子去世。癸丑使得癸水有根，所以所以身弱，而不是从弱。
+# 比劫太旺，惹怒了官杀，水土大战。戊申运，己亥年，申子辰三合水，亥子丑三会水，官杀混杂，车祸死了。
+BasicAnalyzer('1973/1/6 8:00:00', False)

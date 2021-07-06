@@ -1,4 +1,7 @@
-class Framework:
+from common.prediction.stage import Stage
+
+
+class Framework(Stage):
     """
     根据权和平台，定平台爻位的态、平台之间的作用关系（例如三合、三会）。
     根据态，定平台爻位和静爻的力量。
