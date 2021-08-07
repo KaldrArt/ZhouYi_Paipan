@@ -34,19 +34,38 @@ class GeJuAnalyzer:
             1.2.2.2 弱
             1.2.2.3 不旺也不弱
                 根据月干对日干的作用断旺衰
-
     """
 
     def __init__(self, pai_pan: PaiPan, liu_qin_relation=LiuQinBasic):
         self.pai_pan = pai_pan
         self.liu_qin_relation = liu_qin_relation
         self.yue_ling_kong_wang = self.check_yue_ling_kong_wang()
+        if self.yue_ling_kong_wang:
+            pass
+        else:
+            pass
         self.yue_ling_shou_zhi_twice = self.check_yue_ling_shou_zhi_twice()
 
-    def check_zhu_you_li(self):
+    def check_gan_you_li(self, target_gan=""):
         pass
 
+    def check_zhu_you_li(self, from_ling="yue_ling") -> TianGanShengYuYueLingWangRuo:
+        target = "ri_gan"
+        if from_ling == "yue_ling":
+            pass
+        elif from_ling == "nian_ling":
+            pass
+        elif from_ling == "yue_gan":
+            pass
+        elif from_ling == "nian_gan":
+            pass
+        else:
+            raise ("只能从月令、年令、月干、年干取")
+
     def check_yue_ling_kong_wang(self):
+        """
+        检查月令是否空亡
+        """
         yue_ling = self.pai_pan.yue_zhu.di_zhi
         if yue_ling.name in [x.name for x in self.pai_pan.kong_wang]:
             return True
