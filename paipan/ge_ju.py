@@ -1,5 +1,4 @@
 from enum import Enum
-from paipan.pai_pan import PaiPan
 
 
 class GeJuBase:
@@ -16,6 +15,28 @@ class GeJuBase:
         self.name = name
         self.wang = wang
         self.cong = cong
+        self.yong_shen = self.set_yong_ji()
+
+    def set_yong_ji(self):
+        yong_shen = {
+            "zheng_guan": False,
+            "pian_guan": False,
+            "zheng_cai": False,
+            "pian_cai": False,
+            "shang_guan": False,
+            "shi_shen": False,
+            "zheng_yin": True,
+            "pian_yin": True,
+            "bi_jian": True,
+            "jie_cai": True
+        }
+        if (self.wang and not self.cong) or (not self.wang and self.cong):
+            """
+            身旺和从弱格局的用神一样
+            """
+            for liu_qin in yong_shen:
+                yong_shen[liu_qin] = not yong_shen[liu_qin]
+        return yong_shen
 
 
 class GeJu(Enum):
@@ -23,3 +44,6 @@ class GeJu(Enum):
     身弱 = GeJuBase("身弱", False, False)
     从旺 = GeJuBase("从旺", True, True)
     从弱 = GeJuBase("从弱", False, True)
+
+
+a = GeJu.身弱
