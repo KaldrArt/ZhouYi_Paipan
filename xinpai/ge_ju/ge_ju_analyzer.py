@@ -75,20 +75,30 @@ class GeJuAnalyzer:
         if self.ri_zhu_ling_wang_ruo == TianGanShengYuLingWangRuo.不旺不弱:
             self.check_from_yue_gan = True
             self.ri_zhu_ling_wang_ruo = self.check_ri_zhu_yu_ling_you_li(from_ling='yue_gan')
-        # 获取
+        # 二、看天干是否从格
 
-    def check_ling_shou_zhi_twice(self, ling="yue_ling"):
+    def check_ling_shou_zhi_twice(self, ling="yue_ling") -> bool:
+        """
+        检查月令或者日令是否受制2次
+        """
         if ling not in ['yue_ling', "ri_ling"]:
             raise "只检查月令和日令的受制情况"
         ling = self.pai_pan.yue_zhu.di_zhi
         if ling == 'ri_ling':
             ling = self.pai_pan.ri_zhu.di_zhi
         # TODO: 判断左右与令作用后是否受制两次
+        return True
 
-    def check_gan_you_li(self, target_position=""):
+    def check_tian_gan_you_li(self, target_position="") -> bool:
+        """
+        检查天干是否有力
+        """
+        tian_gan = self.pai_pan.yue_zhu.tian_gan
+        di_zhi = self.pai_pan.yue_zhu.di_zhi
+        
         if target_position not in ['ri_zhu', "yue_zhu", "shi_zhu"]:
             pass
-        pass
+        return True
 
     def check_ri_zhu_yu_ling_you_li(self, from_ling="yue_ling") -> TianGanShengYuLingWangRuo:
         """
