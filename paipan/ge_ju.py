@@ -44,6 +44,3 @@ class GeJu(Enum):
     身弱 = GeJuBase("身弱", False, False)
     从旺 = GeJuBase("从旺", True, True)
     从弱 = GeJuBase("从弱", False, True)
-
-
-a = GeJu.身弱
