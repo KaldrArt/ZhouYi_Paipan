@@ -41,8 +41,8 @@ class GeJuAnalyzer:
     二、检查在日支、月干、日干的旺弱，来判断是否是从格
     """
 
-    def __init__(self, pai_pan: PaiPan, liu_qin_relation=LiuQinBasic):
-        self.pai_pan = pai_pan
+    def __init__(self, pai_pan_input: PaiPan, liu_qin_relation=LiuQinBasic):
+        self.pai_pan = pai_pan_input
         self.liu_qin_relation = liu_qin_relation
         self.yue_ling_kong_wang = self.check_yue_ling_kong_wang()
         self.check_from_yue_gan = False
@@ -85,7 +85,9 @@ class GeJuAnalyzer:
             ling = self.pai_pan.ri_zhu.di_zhi
         # TODO: 判断左右与令作用后是否受制两次
 
-    def check_gan_you_li(self, target_gan=""):
+    def check_gan_you_li(self, target_position=""):
+        if target_position not in ['ri_zhu', "yue_zhu", "shi_zhu"]:
+            pass
         pass
 
     def check_ri_zhu_yu_ling_you_li(self, from_ling="yue_ling") -> TianGanShengYuLingWangRuo:
