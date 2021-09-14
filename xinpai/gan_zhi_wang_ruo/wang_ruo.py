@@ -1,6 +1,6 @@
 from common.relations.relation import Relation
 from common.yi_base import Yi
-from xinpai.gan_zhi_wang_ruo.relation_type import XinPaiEffectGanZhiPosition
+from xinpai.gan_zhi_wang_ruo.relation_type import XinPaiRelationType
 from common.positions.ming_ju_positions import MingJuPosition
 
 
@@ -10,7 +10,7 @@ class XinPaiGanZhi:
 
 
 class XinPaiRelation:
-    def __init__(self, target_gan_zhi: Yi, effect_gan_zhi: Yi):
+    def __init__(self, target_gan_zhi: XinPaiGanZhi, effect_gan_zhi: XinPaiGanZhi):
         pass
 
 
