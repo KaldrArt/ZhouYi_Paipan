@@ -35,6 +35,9 @@ PositionBase = namedtuple("PositionBase", [
     "", 1, None, False, False
 ])
 
+xin_pai_gan_zhi_position_list = ['地支', '天干', '空亡地支', '月令', '年令', '大运天干', '大运地支', '空亡大运地支', '流年天干', '流年地支', '空亡流年地支',
+                                 '小运天干', '小运地支']
+
 
 class XinPaiGanZhiPosition(Enum):
     地支 = PositionBase('地支', XinPaiZhu.柱, 1, di_zhi=True)
@@ -56,4 +59,3 @@ class XinPaiGanZhi(Position):
     def __init__(self, yi: YiBase, position: XinPaiGanZhiPosition):
         self.yi = yi
         self.position = position
-    
