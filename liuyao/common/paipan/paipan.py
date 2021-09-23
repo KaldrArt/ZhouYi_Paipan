@@ -97,7 +97,7 @@ class PaiPan(Dao):
             self.jing_gua = False
             self.bian_gua = self.ben_gua.bian_gua
         else:
-            self.bian_gua = self.bian_gua
+            self.bian_gua = self.ben_gua
             self.jing_gua = True
 
         if self.check_paipan_info():

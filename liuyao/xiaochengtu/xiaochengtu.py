@@ -1,4 +1,5 @@
 from liuyao.common.gua import SanYaoGua, LiuYaoGua
+from liuyao.common.basic import get_gua_code_from_gua_name
 
 
 class Pan:
@@ -23,6 +24,9 @@ class Pan:
         self.qian = gong_wei_list[8]
 
     def to_md(self):
+        pass
+
+    def to_image(self):
         pass
 
     def __str__(self):
@@ -65,8 +69,50 @@ class XiaoChengTu:
         ]
         return Pan(tian_pan_list)
 
+    def __get_gui_cang(self):
+        pass
+
+    def __get_zhong_gong_relation(self):
+        pass
+
+    def __get_gong_wei_ji_xiong(self):
+        pass
+
+    def __get_pang_tui(self):
+        pass
+
+    def __get_zheng_tui(self):
+        pass
+
     def print_di_pan(self):
         print("\n地盘" + self.di_pan.__str__())
 
     def print_tian_pan(self):
         print("\n天盘" + self.tian_pan.__str__())
+
+
+def get_xiao_cheng_tu_from_4_codes(ben_gua_shang: int,
+                                   ben_gua_xia: int,
+                                   bian_gua_shang: int,
+                                   bian_gua_xia: int) -> XiaoChengTu:
+    ben_gua = LiuYaoGua(ben_gua_shang, ben_gua_xia)
+    bian_gua = LiuYaoGua(bian_gua_shang, bian_gua_xia)
+    return XiaoChengTu(ben_gua, bian_gua)
+
+
+def get_xiao_cheng_tu_from_gua_code(ben_gua_code: int, bian_gua_code: int) -> XiaoChengTu:
+    return get_xiao_cheng_tu_from_4_codes(
+        ben_gua_shang=ben_gua_code // 10,
+        ben_gua_xia=ben_gua_code % 10,
+        bian_gua_shang=bian_gua_code // 10,
+        bian_gua_xia=bian_gua_code % 10
+    )
+
+
+def get_xiao_cheng_tu_from_gua_name(ben_gua_name, bian_gua_name) -> XiaoChengTu:
+    ben_gua_code = get_gua_code_from_gua_name(ben_gua_name)
+    bian_gua_code = get_gua_code_from_gua_name(bian_gua_name)
+    return get_xiao_cheng_tu_from_gua_code(ben_gua_code, bian_gua_code)
+
+
+get_xiao_cheng_tu_from_gua_name("乾为天", '兑为泽').print_tian_pan()

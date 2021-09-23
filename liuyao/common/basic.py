@@ -128,3 +128,21 @@ def get_gua_from_yao_wei(yao_wei_list=[]):
             break
         idx += 1
     return gua_list[idx]
+
+
+def get_gua_code_from_gua_name(name):
+    i = 0
+    for search_gong in gua_name:
+        j = 0
+        finish_flag = False
+        for gua in search_gong:
+            if gua.find(name) >= 0:
+                finish_flag = True
+                break
+            j += 1
+        if finish_flag:
+            break
+        i += 1
+    if i > 7 or j > 7:
+        raise "输入的八卦名称有误"
+    return gua_gong[i][j]

@@ -41,8 +41,9 @@ def get_gua_name_from_yao(yao_list):
 
 
 class Gua:
-    def __init__(self, name, yin_yang=False, up=True):
+    def __init__(self, name, yin_yang=False, up=True, ename=""):
         self.name = name
+        self.ename = ename
         self.yin_yang = yin_yang
         self.up = up
         self.index = gua_list.find(name) + 1
@@ -71,14 +72,14 @@ class Gua:
 
 
 class SanYaoGua(Enum):
-    乾 = Gua("乾", True, True)
-    兑 = Gua("兑", False, False)
-    离 = Gua("离", False, True)
-    震 = Gua("震", True, True)
-    巽 = Gua("巽", False, False)
-    坎 = Gua("坎", True, False)
-    艮 = Gua("艮", True, True)
-    坤 = Gua("坤", False, False)
+    乾 = Gua("乾", True, True, 'qian')
+    兑 = Gua("兑", False, False, 'dui')
+    离 = Gua("离", False, True, 'li')
+    震 = Gua("震", True, True, 'zhen')
+    巽 = Gua("巽", False, False, 'xun')
+    坎 = Gua("坎", True, False, 'kan')
+    艮 = Gua("艮", True, True, 'gen')
+    坤 = Gua("坤", False, False, 'kun')
 
 
 def get_gua_from_code(code) -> Gua:
@@ -122,6 +123,50 @@ class LiuYaoGua:
             self.bian_gua = None
         self.shang_hu_gua = self.__set_shang_hu_gua()
         self.xia_hu_gua = self.__set_xia_hu_gua()
+        self.de_pei = self.__set_de_pei()
+        self.direction = self.__set_direction()
+        self.ji_xiong_hui_lin = self.__set_jixionghuilin()
+
+    def __set_jixionghuilin(self):
+        if self.direction == '往':
+            if self.de_pei:
+                result = '亨'
+            else:
+                result = "悔"
+        elif self.direction == '来':
+            if self.de_pei:
+                result = "贞"
+            else:
+                result = "吝"
+        elif self.direction == '阖':
+            if self.de_pei:
+                result = '吉'
+            else:
+                result = "凶"
+        else:
+            if self.de_pei:
+                result = "害"
+            else:
+                result = '利'
+        return result
+
+    def __set_direction(self):
+        if self.neigua.up and self.waigua.up:
+            result = "往"
+        elif self.neigua.up and not self.waigua.up:
+            result = "阖"
+        elif not self.neigua.up and self.waigua.up:
+            result = '辞'
+        else:
+            result = '来'
+        return result
+
+    def __set_de_pei(self):
+        if self.waigua.yin_yang and not self.neigua.yin_yang:
+            return True
+        elif self.neigua.yin_yang and not self.waigua.yin_yang:
+            return True
+        return False
 
     def __set_shang_hu_gua(self):
         first_yao = self.neigua.yao_wei[-1]
