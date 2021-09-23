@@ -109,6 +109,22 @@ def get_liu_qin_of_target(
     target_dizhi_liuqin_index = liu_qin.index(target_dizhi_liuqin)
     target_wuxing_index = wu_xing.index(DiZhi[target_dizhi].value.wu_xing.name)
     effect_wuxing_index = wu_xing.index(DiZhi[effect_dizhi].value.wu_xing.name)
-    effect_liuqin_index = target_dizhi_liuqin_index+(effect_wuxing_index
-                                                     - target_wuxing_index)
+    effect_liuqin_index = target_dizhi_liuqin_index + (effect_wuxing_index
+                                                       - target_wuxing_index)
     return liu_qin[effect_liuqin_index % 5]
+
+
+def get_gua_from_yao_wei(yao_wei_list=[]):
+    idx = 0
+    for i in gua_yao_list:
+        all_equal = True
+        j = 0
+        for yao_wei in yao_wei_list:
+            if i[j] != yao_wei:
+                all_equal = False
+                continue
+            j += 1
+        if all_equal:
+            break
+        idx += 1
+    return gua_list[idx]

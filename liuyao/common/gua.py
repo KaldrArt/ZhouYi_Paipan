@@ -1,7 +1,7 @@
 from enum import Enum
 from liuyao.common.basic import gua_wu_xing_list, gua_liu_qin, gua_list, \
-    gua_dizhi_map, gua_yao_list,  get_gua_name_from_code, gua_dizhi_list, \
-    get_liu_shen_by_ri_gan, get_liu_qin_of_target
+    gua_dizhi_map, gua_yao_list, get_gua_name_from_code, gua_dizhi_list, \
+    get_liu_shen_by_ri_gan, get_liu_qin_of_target, get_gua_from_yao_wei
 from liuyao.common.dizhi import DiZhi
 from liuyao.common.yao import Yao, DongYao, BianYao, JingYao
 from liuyao.common.prediction.platform import Platform
@@ -41,8 +41,10 @@ def get_gua_name_from_yao(yao_list):
 
 
 class Gua:
-    def __init__(self, name):
+    def __init__(self, name, yin_yang=False, up=True):
         self.name = name
+        self.yin_yang = yin_yang
+        self.up = up
         self.index = gua_list.find(name) + 1
         self.dizhi = gua_dizhi_map[self.name]
         self.yao_wei = gua_yao_list[self.index - 1]
@@ -69,14 +71,14 @@ class Gua:
 
 
 class SanYaoGua(Enum):
-    乾 = Gua("乾")
-    兑 = Gua("兑")
-    离 = Gua("离")
-    震 = Gua("震")
-    巽 = Gua("巽")
-    坎 = Gua("坎")
-    艮 = Gua("艮")
-    坤 = Gua("坤")
+    乾 = Gua("乾", True, True)
+    兑 = Gua("兑", False, False)
+    离 = Gua("离", False, True)
+    震 = Gua("震", True, True)
+    巽 = Gua("巽", False, False)
+    坎 = Gua("坎", True, False)
+    艮 = Gua("艮", True, True)
+    坤 = Gua("坤", False, False)
 
 
 def get_gua_from_code(code) -> Gua:
@@ -118,6 +120,20 @@ class LiuYaoGua:
             self.yao_and_platforms = self.__set_yaos_and_platforms__()
         else:
             self.bian_gua = None
+        self.shang_hu_gua = self.__set_shang_hu_gua()
+        self.xia_hu_gua = self.__set_xia_hu_gua()
+
+    def __set_shang_hu_gua(self):
+        first_yao = self.neigua.yao_wei[-1]
+        second_yao = self.waigua.yao_wei[0]
+        third_yao = self.waigua.yao_wei[1]
+        return SanYaoGua[get_gua_from_yao_wei([first_yao, second_yao, third_yao])]
+
+    def __set_xia_hu_gua(self):
+        first_yao = self.neigua.yao_wei[1]
+        second_yao = self.neigua.yao_wei[2]
+        third_yao = self.waigua.yao_wei[0]
+        return SanYaoGua[get_gua_from_yao_wei([first_yao, second_yao, third_yao])]
 
     def __set_biangua_liuqin(self):
         result = []
@@ -147,7 +163,7 @@ class LiuYaoGua:
             else:
                 gua = self.waigua
                 bian_gua = self.bian_gua.waigua
-            if i+1 in self.dong_code:
+            if i + 1 in self.dong_code:
                 bengua_yao = self.__set_dongyao__(i, gua)
                 biangua_yao = self.__set_bianyao__(i, bian_gua)
             else:
@@ -156,7 +172,7 @@ class LiuYaoGua:
             ben_gua_yaos[i] = bengua_yao
             bian_gua_yaos[i] = biangua_yao
             yaos[i] = (bengua_yao, biangua_yao)
-            if i+1 in self.dong_code:
+            if i + 1 in self.dong_code:
                 platform = self.__set_platform__(i, bengua_yao, biangua_yao)
                 platforms[i] = platform
 
@@ -173,27 +189,27 @@ class LiuYaoGua:
         return self.__set_yao__(yao_index, gua, DongYao)
 
     def __set_jingyao__(self, yao_index, gua):
-        return self.__set_yao__(yao_index, gua,  JingYao)
+        return self.__set_yao__(yao_index, gua, JingYao)
 
     def __set_yao__(self, yao_index, gua, yao_class=Yao):
         i = yao_index
         if i < 3:
             dizhi = gua.dizhi['inside'][i]
         else:
-            dizhi = gua.dizhi['outside'][i-3]
+            dizhi = gua.dizhi['outside'][i - 3]
         if yao_class.__name__ in ['Yao', 'BianYao']:
             liuqin = self.bian_gua_liuqin[i]
         else:
             liuqin = self.liu_qin[i]
-        yao = yao_class(i+1,
+        yao = yao_class(i + 1,
                         dizhi,
                         liuqin,
                         self.liu_shen[i],
                         gua,
                         self.shi,
                         self,
-                        True if i+1 == self.shi_index else False,
-                        True if i+1 == self.ying_index else False,
+                        True if i + 1 == self.shi_index else False,
+                        True if i + 1 == self.ying_index else False,
                         self.fu_shen_list[i]
                         )
 
@@ -324,7 +340,7 @@ class LiuYaoGua:
         ]
         for item in liu_he_list:
             if (self.neigua_code == item[0]
-                    and self.waigua_code == item[1]) \
+                and self.waigua_code == item[1]) \
                     or (self.neigua_code == item[1]
                         and self.waigua_code == item[0]):
                 return True

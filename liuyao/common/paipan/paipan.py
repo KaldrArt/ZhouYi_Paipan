@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 import math
 import re
 from common.prediction.dao import Dao
+from liuyao.xiaochengtu.xiaochengtu import XiaoChengTu
+
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}
 
 
@@ -95,6 +97,7 @@ class PaiPan(Dao):
             self.jing_gua = False
             self.bian_gua = self.ben_gua.bian_gua
         else:
+            self.bian_gua = self.bian_gua
             self.jing_gua = True
 
         if self.check_paipan_info():
@@ -106,6 +109,7 @@ class PaiPan(Dao):
         self.print_yin_yang = print_yin_yang
         # self.ben_gua.set_liu_shen(get_liu_shen_by_ri_gan(self.ri[0]))
         # self.ping_tai = self.__set_ping_tai()
+        self.xiao_cheng_tu = XiaoChengTu(self.ben_gua, self.bian_gua)
         if save:
             self.print_md()
 
@@ -189,8 +193,6 @@ class PaiPan(Dao):
                     s += ".."
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
             # pyperclip.copy(s.replace("\t", "    "))
-
-            return s
         else:
             s += "\n"
             for i in range(0, 6):
@@ -220,7 +222,8 @@ class PaiPan(Dao):
                     s += "    "
                 s += "\t" + self.ben_gua.liu_shen[5 - i] + "\n"
             # pyperclip.copy(s.replace("\t", "    "))
-            return s
+        s += "\n" + self.xiao_cheng_tu.tian_pan.__str__()
+        return s
 
     def check_paipan_info(self):
         pass
@@ -367,12 +370,12 @@ class PaiPanFromSentence(PaiPan):
 class PaiPanFromTextAndTime(PaiPanFromSentence):
     def get_code(self, strokes, shi, nian, yue, ri):
         stroke_count = sum(strokes)
-        nian_zhi_index = (nian-1984+1) % 12
+        nian_zhi_index = (nian - 1984 + 1) % 12
         if nian_zhi_index == 0:
             nian_zhi_index = 12
 
-        shang_gua_count = nian_zhi_index+yue+ri+stroke_count
-        xia_gua_count = shang_gua_count+shi
+        shang_gua_count = nian_zhi_index + yue + ri + stroke_count
+        xia_gua_count = shang_gua_count + shi
         shang_gua = shang_gua_count % 8
         xia_gua = xia_gua_count % 8
         dong_yao = xia_gua % 6
@@ -382,6 +385,6 @@ class PaiPanFromTextAndTime(PaiPanFromSentence):
             shang_gua = 8
         if xia_gua == 0:
             xia_gua = 8
-        return shang_gua*100+xia_gua*10+dong_yao
+        return shang_gua * 100 + xia_gua * 10 + dong_yao
 
 # print(Solar2LunarCalendar('2021/06/15'))
