@@ -114,5 +114,6 @@ def get_xiao_cheng_tu_from_gua_name(ben_gua_name, bian_gua_name) -> XiaoChengTu:
     bian_gua_code = get_gua_code_from_gua_name(bian_gua_name)
     return get_xiao_cheng_tu_from_gua_code(ben_gua_code, bian_gua_code)
 
+# get_xiao_cheng_tu_from_gua_name("大蓄", '中孚').print_tian_pan()
 
-get_xiao_cheng_tu_from_gua_name("乾为天", '兑为泽').print_tian_pan()
+# get_xiao_cheng_tu_from_gua_code(15, 25).print_tian_pan()

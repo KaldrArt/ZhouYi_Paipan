@@ -110,7 +110,7 @@ class DaZongYiTransformer:
     def get_info(self):
         start_gua = False
         for line in self.content:
-            if line.startswith("===="):
+            if line.startswith("====") or line.startswith("小成图"):
                 break
             if not start_gua:
                 if line.startswith("求测人年龄"):
