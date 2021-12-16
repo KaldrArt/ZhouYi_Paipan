@@ -81,7 +81,7 @@ class DaZongYiTransformer:
     def save_file(self, info):
         folder = self.output_path + self.info['project'] + "/"
         mkdir(folder)
-        filename = folder + self.info['content'] + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".md"
+        filename = folder + self.info['content'][0:10] + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".md"
         with open(filename, 'w') as f:
             f.write(info)
             f.close()
