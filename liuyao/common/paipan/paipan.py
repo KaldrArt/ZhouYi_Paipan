@@ -63,13 +63,14 @@ class PaiPan(Dao):
             if not nian:
                 nian = datetime.now().year
             base_time = datetime(int(nian), int(yue), int(ri))
+
             self.time = (base_time + timedelta(hours=shi)
                          ).strftime("%Y/%m/%dT%H:%M:%S")
             if shi:
                 if shi == 23:
                     base_time += timedelta(days=1)
             self.nian, self.yue, self.ri, self.yinli = Solar2LunarCalendar(
-                base_time.strftime("%Y/%m/%d %H:%M:%s"))
+                base_time.strftime("%Y/%m/%d %H:%M:%S"))
         # 没有完整的日月，也没有设置起卦时间，设置为当前时间
         elif not self.time:
             self.time = datetime.now().strftime("%Y/%m/%dT%H:%M:%S")
