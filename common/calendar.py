@@ -106,13 +106,13 @@ def Solar2LunarCalendar(date_str, gan_zhi_type="hybrid"):  # 默认输入ut+8时
     """
 
     if isinstance(date_str, datetime.datetime):
-        date_str = date_str.strftime("%Y/%m/%d %H:%M:%s")
+        date_str = date_str.strftime("%Y/%m/%d %H:%M:%S")
     if ":" not in date_str:
         date_str += " 00:00:00"
     else:
         date_str = date_str[0:19]
     JD = ephem.julian_date(date_str) - 8 / 24  # ut
-    year = ephem.Date(JD + 8/24 - 2415020).triple()[0]
+    year = ephem.Date(JD + 8 / 24 - 2415020).triple()[0]
     year_month_day, hour_minute_second = date_str.split(" ")
     year_normal, month, day = [int(i) for i in year_month_day.split("/")]
     hour, minute, second = [int(i) for i in hour_minute_second.split(":")]
@@ -170,7 +170,7 @@ def Solar2LunarCalendar(date_str, gan_zhi_type="hybrid"):  # 默认输入ut+8时
     if szy >= zry % 12 and zry != 99:
         szy -= 1  # 置闰后的月序名
     rq = math.floor(JD + 8 / 24 + 0.5) - \
-        math.floor(newmoon + 8 / 24 + 0.5)  # 日干支
+         math.floor(newmoon + 8 / 24 + 0.5)  # 日干支
 
     if gan_zhi_type == "hybrid":
         # 以正月开始的年干支
@@ -203,9 +203,9 @@ def Solar2LunarCalendar(date_str, gan_zhi_type="hybrid"):  # 默认输入ut+8时
         if JD >= jJD1:
             jqx = k
         elif JD < jJD2:
-            jqx = k-2
+            jqx = k - 2
         else:
-            jqx = k-1
+            jqx = k - 1
 
     if year < 0:
         year += 1
@@ -226,7 +226,7 @@ def Solar2LunarCalendar(date_str, gan_zhi_type="hybrid"):  # 默认输入ut+8时
     fix = 0
     if hour == 23 and not gan_zhi_type == 'hybrid':
         fix = 1
-    ri_jia_zi = gz[math.floor(JD+8/24+0.5+49+fix) % 60]
+    ri_jia_zi = gz[math.floor(JD + 8 / 24 + 0.5 + 49 + fix) % 60]
     # print(rq, (szy-3) % 12)
     nongli_ri = run + yuefen[(szy - 3) % 12] + nlrq[rq]
     return nian_jia_zi, yue_jia_zi, ri_jia_zi, nongli_ri
@@ -337,7 +337,7 @@ def iteration(n, jd_utc):  # 迭代求时间
     while True:
         e = ecliptic_lon(jd_utc)
         dd = (n * 15 - e * 180.0 / math.pi) / 360 * \
-            tropicl_year  # 24节气对应的太阳黄经和当前时间求得的太阳黄经差值转为天数
+             tropicl_year  # 24节气对应的太阳黄经和当前时间求得的太阳黄经差值转为天数
         if dd > 360:  # 春分时太阳黄经为0，dd有可能差值过大
             dd -= tropicl_year
         jd_utc += dd
@@ -406,6 +406,7 @@ def jie_before(date: datetime.datetime):
 def jie_after(date: datetime.datetime):
     result = []
     jq_result = select_jie(date, next=True)
+
     result += jq_result
     result.append(jq_result[1] - date)
     return result
@@ -414,7 +415,7 @@ def jie_after(date: datetime.datetime):
 def get_jie_of_year(year: int, only_jie=True):
     date_str = datetime.datetime(
         year - 1, 11, 1, 0, 0, 0).strftime("%Y/%m/%d %H:%M:%S")
-    jqs = jq(date_str, 28)
+    jqs = jq(date_str, 35)
     results = []
     for e in jqs:
         name = e[0]

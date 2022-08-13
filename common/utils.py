@@ -1,18 +1,19 @@
 from datetime import datetime, timedelta
 import os
 from common.calendar import get_jie_of_year, Solar2LunarCalendar
+
 tiangan = '甲乙丙丁戊己庚辛壬癸'
 dizhi = '子丑寅卯辰巳午未申酉戌亥'
 
 
 def get_next_jiazi(current_jiazi):
-    return tiangan[(tiangan.index(current_jiazi[0])+1) % 10] +\
-        dizhi[(dizhi.index(current_jiazi[1])+1) % 12]
+    return tiangan[(tiangan.index(current_jiazi[0]) + 1) % 10] + \
+           dizhi[(dizhi.index(current_jiazi[1]) + 1) % 12]
 
 
 def get_previous_jiazi(current_jiazi):
-    return tiangan[(tiangan.index(current_jiazi[0])-1) % 10] +\
-        dizhi[(dizhi.index(current_jiazi[1])-1) % 12]
+    return tiangan[(tiangan.index(current_jiazi[0]) - 1) % 10] + \
+           dizhi[(dizhi.index(current_jiazi[1]) - 1) % 12]
 
 
 # print(get_next_jiazi('癸亥'))
@@ -35,9 +36,9 @@ def jie_around_date(date: datetime):
     month = date.month
     jieqis = get_jie_of_year(year)
     if month == 1:
-        jieqis = get_jie_of_year(year-1)+jieqis
+        jieqis = get_jie_of_year(year - 1) + jieqis
     elif month == 12:
-        jieqis += get_jie_of_year(year+1)
+        jieqis += get_jie_of_year(year + 1)
     last_jie = None
     current_jie = None
     next_jie = None
@@ -47,8 +48,8 @@ def jie_around_date(date: datetime):
             next_jie = jie
             break
         current_jie = jie
-    pre_jie_time_diff = date-last_jie[1]
-    next_jie_time_diff = next_jie[1]-date
+    pre_jie_time_diff = date - last_jie[1]
+    next_jie_time_diff = next_jie[1] - date
     result = {
         'jie_before': {
             'jie': last_jie,
@@ -98,7 +99,7 @@ def get_gan_zhi_of_date(date):
     if jies['should_use_previous_date']:
         print("需要用到前一天的干支")
         # date_to_parse_previous_day = date_to_parse-timedelta(days=1)
-        #date_str = date_to_parse_previous_day.strftime("%Y/%m/%d")
+        # date_str = date_to_parse_previous_day.strftime("%Y/%m/%d")
         # ganzhi_of_previous_date = list(Solar2LunarCalendar(date_str))
         # 优化，不需要通过ephem递归运算
         # ganzhi_of_date[0] = ganzhi_of_previous_date[0]
@@ -116,7 +117,7 @@ def get_gan_zhi_of_date(date):
                 # 如果立春的时候，是正月初一，那么不变
                 if jies['jie_after']['jie'][3] == '正月初一':
                     pass
-                 # 如果立春的时候，已经是正月初一以后的时间，那么年干一定要向前减一年
+                # 如果立春的时候，已经是正月初一以后的时间，那么年干一定要向前减一年
                 else:
                     ganzhi_of_date[0] = get_previous_jiazi(ganzhi_of_date[0])
                     pass
@@ -129,9 +130,9 @@ def get_gan_zhi_of_date(date):
             ganzhi_of_date[1] = get_previous_jiazi(ganzhi_of_date[1])
         # print('前一天00:00的干支', ganzhi_of_previous_date)
     if jies['should_use_next_day']:
-        #date_to_parse_next_day = date_to_parse+timedelta(days=1)
-        #date_str = date_to_parse_next_day.strftime("%Y/%m/%d")
-        #ganzhi_of_next_date = list(Solar2LunarCalendar(date_str))
+        # date_to_parse_next_day = date_to_parse+timedelta(days=1)
+        # date_str = date_to_parse_next_day.strftime("%Y/%m/%d")
+        # ganzhi_of_next_date = list(Solar2LunarCalendar(date_str))
         # TODO: 可以优化，不需要递归来运算
         ganzhi_of_date[2] = get_next_jiazi(ganzhi_of_date[2])
     return ganzhi_of_date[0], ganzhi_of_date[1], ganzhi_of_date[2], ganzhi_of_date[3]
