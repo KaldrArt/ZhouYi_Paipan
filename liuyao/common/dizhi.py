@@ -1,5 +1,5 @@
-from common.dizhi import DiZhiBase, Yi
-from common import *
+from bazi_common.dizhi import DiZhiBase, Yi
+from bazi_common import *
 
 liu_qin_list = "兄孙财官父"
 wu_xing_list = '木火土金水'

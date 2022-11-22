@@ -1,4 +1,4 @@
-from common.prediction.stage import Stage
+from bazi_common.prediction.stage import Stage
 
 
 class Framework(Stage):

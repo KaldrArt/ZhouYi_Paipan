@@ -1,15 +1,15 @@
 from liuyao.common.gua import LiuYaoGua
 from liuyao.common.prediction.platform import Platform
-from common.jiazi import JiaZi, JiaZiBase
-from common.calendar import Solar2LunarCalendar
-from common.utils import init_date
-# from liuyao.common.basic import get_liu_shen_by_ri_gan
+from bazi_common.jiazi import JiaZi, JiaZiBase
+from bazi_common.calendar import Solar2LunarCalendar
+from bazi_common.utils import init_date
+# from liuyao.bazi_common.basic import get_liu_shen_by_ri_gan
 from liuyao.common.paipan_parser.dazongyi_to_md import DaZongYiTransformer
 from liuyao.common.zh_dict.stroke import get_stroke
 from datetime import datetime, timedelta
 import math
 import re
-from common.prediction.dao import Dao
+from bazi_common.prediction.dao import Dao
 from liuyao.xiaochengtu.xiaochengtu import XiaoChengTu
 
 default_info = {"年龄": 34, "性别": "男", "职业": "IT", "起卦时间": ""}

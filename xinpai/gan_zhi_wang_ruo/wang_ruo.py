@@ -1,7 +1,7 @@
-from common.relations.relation import Relation
-from common.yi_base import Yi
+from bazi_common.relations.relation import Relation
+from bazi_common.yi_base import Yi
 from xinpai.gan_zhi_wang_ruo.relation_type import XinPaiRelationType
-from common.positions.ming_ju_positions import MingJuPosition
+from bazi_common.positions.ming_ju_positions import MingJuPosition
 
 
 class XinPaiGanZhi:

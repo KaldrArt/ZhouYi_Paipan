@@ -1,4 +1,4 @@
-from common import *
+from bazi_common import *
 from paipan.si_zhu import SiZhu
 from paipan.da_yun import DaYun
 from paipan.qi_yun_shi_jian import QiYunShiJian

@@ -1,6 +1,6 @@
 from datetime import datetime
-from common.output import liuyao_gua_output_path
-from common.utils import mkdir
+from bazi_common.output import liuyao_gua_output_path
+from bazi_common.utils import mkdir
 
 example = """
 李洪成六爻在线摇卦

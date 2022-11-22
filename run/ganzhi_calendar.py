@@ -1,4 +1,4 @@
-from common.ganzhi_calendar.calendar import Calendar
+from bazi_common.ganzhi_calendar.calendar import Calendar
 import getopt
 import sys
 from datetime import datetime

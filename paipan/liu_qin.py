@@ -1,5 +1,5 @@
 from enum import Enum
-from common import *
+from bazi_common import *
 from paipan.pai_pan import PaiPan
 import prettytable as pt
 import sys

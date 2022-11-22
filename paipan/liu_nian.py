@@ -1,4 +1,4 @@
-from common.jiazi import JiaZi, JiaZiBase, jia_zi_list
+from bazi_common.jiazi import JiaZi, JiaZiBase, jia_zi_list
 
 
 def get_year_jia_zi(year):

@@ -1,4 +1,4 @@
-from common import *
+from bazi_common import *
 from .pai_pan import PaiPan
 import prettytable as pt
 import sys

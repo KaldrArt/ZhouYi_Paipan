@@ -1,4 +1,4 @@
-from common.dizhi import DiZhi
+from bazi_common.dizhi import DiZhi
 
 
 class Yao:

@@ -1,4 +1,4 @@
-from common.database.stock import stock_daily_kline_collection
+from bazi_common.database.stock import stock_daily_kline_collection
 
 
 class CommonAggregate:

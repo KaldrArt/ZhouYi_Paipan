@@ -1,4 +1,4 @@
-from common.database.stock import statistic_gua_with_price_collection, stock_daily_kline_collection, \
+from bazi_common.database.stock import statistic_gua_with_price_collection, stock_daily_kline_collection, \
     statistic_gua_with_ri_yue_collection, stock_db
 
 pipeline = [

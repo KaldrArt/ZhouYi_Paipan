@@ -17,7 +17,7 @@ www.zhouyi.com.cn/paipan
 
 摇卦完成是9点52分，当时价格是391.46
 """
-from common.dizhi import DiZhi
+from bazi_common.dizhi import DiZhi
 
 zi = DiZhi['子']
 print(zi)
