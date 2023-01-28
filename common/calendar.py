@@ -106,7 +106,7 @@ def Solar2LunarCalendar(date_str, gan_zhi_type="hybrid"):  # 默认输入ut+8时
     """
 
     if isinstance(date_str, datetime.datetime):
-        date_str = date_str.strftime("%Y/%m/%d %H:%M:%s")
+        date_str = date_str.strftime("%Y/%m/%d %H:%M:%S")
     if ":" not in date_str:
         date_str += " 00:00:00"
     else:

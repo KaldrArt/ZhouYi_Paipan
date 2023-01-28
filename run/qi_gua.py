@@ -219,8 +219,9 @@ def qi_gua(argv):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        print()
+        # print(sys.argv[1:])
         qi_gua(sys.argv[1:])
     else:
         pass
         # pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
+
