@@ -1,4 +1,4 @@
-from common import *
+from bazi_common import *
 from enum import Enum
 
 

@@ -1,6 +1,6 @@
 import os
 import csv
-from common.database.stock import stock_info_collection, stock_daily_kline_collection, tushare_info, \
+from bazi_common.database.stock import stock_info_collection, stock_daily_kline_collection, tushare_info, \
     stock_name_code_collection
 from datetime import datetime
 import baostock
@@ -104,7 +104,7 @@ class DataParser:
                 row['open'] = float(row['open'])
                 row['volume'] = float(row['volume'])
                 row['outstanding_share'] = float(row['outstanding_share'])
-                stock_daily_kline_collection.insert(row)
+                stock_daily_kline_collection.insert_one(row)
 
     def parse_stock_name_code(self):
         cursor = stock_info_collection.find({})
@@ -123,13 +123,13 @@ class DataParser:
 
     def update_kline_date(self):
         limit = 10000
-        kline_count = stock_daily_kline_collection.count({})
+        kline_count = stock_daily_kline_collection.count_documents({})
         count = kline_count // limit + 1
         for i in tqdm(range(count)):
             cursor = stock_daily_kline_collection.find({}).skip(i * limit).limit(limit)
             for item in cursor:
                 formatted_date = datetime.strptime(item['date'], "%Y/%m/%d")
-                stock_daily_kline_collection.update({"_id": item["_id"]}, {"$set": {"date": formatted_date}})
+                stock_daily_kline_collection.update_one({"_id": item["_id"]}, {"$set": {"date": formatted_date}})
 
     def update_info_date(self):
         cursor = list(stock_info_collection.find({}))

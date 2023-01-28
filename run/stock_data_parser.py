@@ -1,18 +1,18 @@
 from liuyao.stock_prediction.MGYD.data_parser import DataParser
-from common.database.stock import stock_info_collection, stock_daily_kline_collection, error_collection, \
+from bazi_common.database.stock import stock_info_collection, stock_daily_kline_collection, error_collection, \
     finish_collection
 from multiprocessing import Pool
 from tqdm import tqdm
 from liuyao.stock_prediction.MGYD.gua_generator import generate_gua
-from common.calendar import Solar2LunarCalendar
+from bazi_common.calendar import Solar2LunarCalendar
 import os
 
-# dp = DataParser()
+dp = DataParser()
 
 # dp.parse_data() #2021-04-23完成
 # dp.get_stock_info() #2021-04-30完成
 # dp.update_info_date() #20210502完成
-# dp.update_kline_date() #2021-05-02完成
+dp.update_kline_date() #2021-05-02完成
 
 
 stocks = list(stock_info_collection.find({}, {"stock": 1, "name_history": 1, "type": 1}))
@@ -106,6 +106,6 @@ def update_stock_kline(i):
 
 
 # count = 20
-if __name__ == '__main__':
-    with Pool(8) as p:
-        r = list(tqdm(p.imap(update_stock_kline, range(count)), total=count))
+# if __name__ == '__main__':
+#     with Pool(8) as p:
+#         r = list(tqdm(p.imap(update_stock_kline, range(count)), total=count))

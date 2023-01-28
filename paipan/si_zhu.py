@@ -1,9 +1,9 @@
-from common.calendar import Solar2LunarCalendar
-from common.jiazi import JiaZi, JiaZiBase
+from bazi_common.calendar import Solar2LunarCalendar
+from bazi_common.jiazi import JiaZi, JiaZiBase
 from datetime import datetime, timedelta
-from common import di_zhi_list, tian_gan_list
+from bazi_common import di_zhi_list, tian_gan_list
 import math
-from common.utils import init_date
+from bazi_common.utils import init_date
 
 
 class SiZhu:

@@ -1,1 +1,1 @@
-from common.calendar import Solar2LunarCalendar
+from bazi_common.calendar import Solar2LunarCalendar

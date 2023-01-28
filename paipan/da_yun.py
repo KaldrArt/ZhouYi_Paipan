@@ -1,4 +1,4 @@
-from common.jiazi import JiaZi, JiaZiBase, jia_zi_list
+from bazi_common.jiazi import JiaZi, JiaZiBase, jia_zi_list
 from paipan.liu_nian import LiuNian
 
 

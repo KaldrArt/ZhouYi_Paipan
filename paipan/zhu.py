@@ -1,4 +1,4 @@
-from common.jiazi import JiaZiBase
+from bazi_common.jiazi import JiaZiBase
 
 
 class Zhu(JiaZiBase):

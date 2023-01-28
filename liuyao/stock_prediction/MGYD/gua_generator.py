@@ -1,4 +1,4 @@
-from common.database.stock import stock_daily_kline_collection, stock_info_collection, stock_gua_by_price_collection, \
+from bazi_common.database.stock import stock_daily_kline_collection, stock_info_collection, stock_gua_by_price_collection, \
     error_collection
 from .utils import get_stock_shu
 

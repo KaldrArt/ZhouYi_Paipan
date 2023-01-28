@@ -1,6 +1,6 @@
 from datetime import datetime
-from common import di_zhi_list
-from common.calendar import Solar2LunarCalendar
+from bazi_common import di_zhi_list
+from bazi_common.calendar import Solar2LunarCalendar
 import math
 
 

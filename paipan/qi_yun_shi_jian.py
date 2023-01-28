@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from common.calendar import jie_before, jie_after, tropicl_year
+from bazi_common.calendar import jie_before, jie_after, tropicl_year
 
 sh = timezone(timedelta(hours=8))
 a = """

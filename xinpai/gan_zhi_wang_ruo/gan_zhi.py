@@ -1,4 +1,4 @@
-from common.positions.position import Position, YiBase
+from bazi_common.positions.position import Position, YiBase
 from collections import namedtuple
 from enum import Enum
 
