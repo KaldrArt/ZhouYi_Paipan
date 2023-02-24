@@ -88,6 +88,8 @@ def qi_gua(argv):
                             "财运" in arg or "合作" in arg or \
                             "前景" in arg or "商业" in arg:
                         arg = "项目前景"
+                    elif '股份' in arg or '华西股份' in arg or '走势' in arg or '股价':
+                        arg = '股票投资'
                     info['预测策项'] = arg
                 elif cmd in ['-j', '--condition']:
                     info['前提条件'] = arg
@@ -115,7 +117,7 @@ def qi_gua(argv):
                     else:
                         info['事项时间'] = time.strftime("%Y/%m/%dT%H:%M:%S")
                         year, month, day, hour = time.year, \
-                            time.month, time.day, time.hour
+                                                 time.month, time.day, time.hour
                 elif cmd in ['-s', '-e', "--setupTime"]:
                     if arg:
                         setup_time_set = True
@@ -149,14 +151,14 @@ def qi_gua(argv):
                         "商业" in arg:
                     info['预测策项'] = "项目前景"
                 elif "何日" in arg or "什么时间" in arg or \
-                    "什么时候" in arg or '哪天' in arg or \
+                        "什么时候" in arg or '哪天' in arg or \
                         "几号" in arg or "几月" in arg:
                     pass
                 if not info['预测策项']:
                     info['预测策项'] = "杂占"
             if not time and setup_time_set:
                 year, month, day, hour = setup_time.year, setup_time.month, \
-                    setup_time.day, setup_time.hour
+                                         setup_time.day, setup_time.hour
                 # print(year, month, day, hour)
         else:
             param = args[0]
@@ -224,4 +226,3 @@ if __name__ == '__main__':
     else:
         pass
         # pyperclip.copy('python qi_gua.py -a 34 -r IT -g 1 ')
-
