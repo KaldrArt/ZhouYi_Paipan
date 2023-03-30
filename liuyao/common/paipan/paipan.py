@@ -288,8 +288,9 @@ class PaiPanFromTime(PaiPan):
 
 class PaiPanFromSentence(PaiPan):
     def __init__(self, chars, nian=0, yue=0, ri=0, shi="",
-                 info=default_info, print_yin_yang=False):
+                 info=default_info, print_yin_yang=False, print_char_strokes=False):
         self.chars = chars
+        self.print_char_stokes = print_char_strokes
         if isinstance(shi, str):
             if not shi:
                 self.shi = "子丑寅卯辰巳午未申酉戌亥".index(
@@ -343,6 +344,8 @@ class PaiPanFromSentence(PaiPan):
 
     def __str__(self):
         s = super(PaiPanFromSentence, self).__str__()
+        if not self.print_char_stokes:
+            return s
         s += "\n=============================\n"
         s += "字\t笔画\t和\t余数"
         s += "\n=============================\n"
